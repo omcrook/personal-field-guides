@@ -26,8 +26,13 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 .chip,button.action{border:1px solid var(--line);background:var(--paper2);padding:7px 10px;border-radius:2px;font-size:12px}.chip strong{font-weight:normal;letter-spacing:.08em;text-transform:uppercase}
 .book{background:var(--paper2);min-height:78vh;box-shadow:0 12px 30px #0002;border:1px solid #cfc5b1;display:grid;grid-template-columns:1fr 1fr;position:relative}
 .book:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#c7bca8;box-shadow:0 0 14px #0002}
+.book.turning,.bookpagewrap.turning{animation:pageturn .26s ease-out}
+@keyframes pageturn{0%{transform:perspective(1400px) rotateY(0deg);filter:brightness(1)}45%{transform:perspective(1400px) rotateY(var(--turn-angle,1.6deg));filter:brightness(.97)}100%{transform:perspective(1400px) rotateY(0deg);filter:brightness(1)}}
 .page{padding:54px 48px;min-width:0;position:relative}.folio{position:absolute;bottom:22px;font-size:10px;letter-spacing:.12em;color:var(--muted)}.left .folio{left:48px}.right .folio{right:48px}
-.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:var(--muted)}h1{font-size:37px;font-weight:normal;line-height:1.05;margin:12px 0 12px}h2{font-size:22px;font-weight:normal;margin:22px 0 8px}.lede{font-size:17px;line-height:1.65}.bodycopy{font-size:15px;line-height:1.72}.plate{width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;margin:auto}.meta{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}.meta div{font-size:11px}.meta b{display:block;text-transform:uppercase;letter-spacing:.12em;font-size:9px;color:var(--muted);margin-bottom:3px}
+.pageedge{position:absolute;top:0;bottom:0;z-index:4;width:44px;border:0;background:linear-gradient(90deg,rgba(38,37,31,.08),transparent);color:var(--muted);font-size:28px;display:flex;align-items:center;justify-content:center;opacity:.56}
+.pageedge:hover,.pageedge:focus{opacity:1;background:rgba(255,255,255,.42);outline:0}.pageedge.prev{left:0}.pageedge.next{right:0;background:linear-gradient(270deg,rgba(38,37,31,.08),transparent)}
+.pageedge[disabled]{opacity:.16;cursor:default}
+.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:var(--muted)}h1{font-size:37px;font-weight:normal;line-height:1.05;margin:12px 0 12px}h2{font-size:22px;font-weight:normal;margin:22px 0 8px}.lede{font-size:17px;line-height:1.65}.bodycopy{font-size:15px;line-height:1.72}.plate{width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;margin:auto;cursor:zoom-in}.plate:focus{outline:2px solid var(--deep);outline-offset:5px}.meta{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}.meta div{font-size:11px}.meta b{display:block;text-transform:uppercase;letter-spacing:.12em;font-size:9px;color:var(--muted);margin-bottom:3px}
 .fieldlabel{display:flex;justify-content:space-between;align-items:center;margin:15px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.12em}.owned{display:flex;align-items:center;gap:8px;margin:8px 0 18px}.owned input{width:18px;height:18px;accent-color:#555}
 textarea{width:100%;min-height:180px;background:#f9f5ec;border:1px solid var(--line);padding:12px;resize:vertical;line-height:1.45}
 .entrymode{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin:8px 0 10px}.entrymode button{border:0;background:transparent;padding:8px;font-size:11px;text-transform:uppercase;letter-spacing:.1em}.entrymode button+button{border-left:1px solid var(--line)}.entrymode button.active{background:#f9f5ec}
@@ -51,6 +56,12 @@ textarea{width:100%;min-height:180px;background:#f9f5ec;border:1px solid var(--l
 @media(max-width:800px){.recgrid{grid-template-columns:1fr}}
 .sessionform{border:1px solid var(--line);background:#eee6d6;padding:14px;margin:14px 0}.sessionform input,.sessionform textarea{width:100%;border:1px solid var(--line);background:#f9f5ec;padding:8px;margin:4px 0 9px}.sessionpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.pickitem{border:1px solid var(--line);padding:9px;background:transparent;text-align:left}.pickitem.active{background:var(--deep);color:#f7f2e8}.sessiongrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}.sessioncard{border:1px solid var(--line);padding:14px}.sessioncard h3{font-family:Georgia,serif;font-weight:normal;margin:0 0 10px}.timedrow{display:grid;grid-template-columns:110px 1fr;gap:8px;align-items:start;margin:8px 0}.timedrow label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding-top:8px}.timedrow textarea{min-height:70px}.comparebox{border:1px solid var(--line);padding:14px;margin:14px 0;background:#f5efe3}.sessionhistory{margin-top:18px}.sessionhistory .reccard{margin-bottom:8px}.sessionink{margin-top:10px}.sessionink canvas{width:100%;height:260px;background:#fbf7ee;border:1px solid var(--line);display:block;touch-action:none}.sessiontoolbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.sessiontoolbar button{border:1px solid var(--line);background:transparent;padding:6px 8px;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
 @media(max-width:800px){.sessionpick,.sessiongrid{grid-template-columns:1fr}.timedrow{grid-template-columns:1fr}}
+.fullscreenviewer{position:fixed;inset:0;z-index:30;background:rgba(20,20,18,.94);display:grid;grid-template-rows:auto 1fr;color:#f7f2e8}
+.fullscreenbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(247,242,232,.22)}
+.fullscreenbar strong{font-weight:normal;font-size:13px;line-height:1.3}.fullscreenbar button{border:1px solid rgba(247,242,232,.5);background:transparent;color:#f7f2e8;padding:7px 10px;font-size:12px}
+.fullscreenbody{min-height:0;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+.fullscreenbody img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;background:#f7f2e8;box-shadow:0 18px 60px rgba(0,0,0,.45);cursor:zoom-out}
+.fullscreenopen{overflow:hidden}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs" type="module"></script>
 <script type="module">
@@ -176,6 +187,7 @@ let currentEntryId='current';
 let noteMode='type';
 let inkStrokes=[];
 let activeStroke=null;
+let inkPointerMoved=false;
 let inkCtx=null;
 const $=s=>document.querySelector(s);
 function key(id){return `pfg.${edition}.${id}`}
@@ -215,6 +227,7 @@ function showAnnotator(page=annotationPage){
       <div class="annotationhint">Apple Pencil marks are registered to the rendered PDF page itself. Zooming or resizing redraws both page and ink from normalized coordinates.</div>
     </aside>
     <section class="bookpagewrap" id="bookPageWrap">
+      ${pageTurnControls('proof')}
       <div class="pdfstage" id="pdfStage">
         <canvas id="pdfCanvas" class="pdfcanvas"></canvas>
         <canvas id="pageInkCanvas" class="pageink"></canvas>
@@ -224,6 +237,86 @@ function showAnnotator(page=annotationPage){
   const a=anchorForPage(annotationPage);
   if($('#annoAnchor')) $('#annoAnchor').innerHTML=`Anchored to <span class="anchorbadge">${a.label}</span>`;
   renderPdfPage(annotationPage);
+}
+function openFullScreen(title, src){
+  closeFullScreen();
+  const overlay=document.createElement('div');
+  overlay.className='fullscreenviewer';
+  overlay.setAttribute('role','dialog');
+  overlay.setAttribute('aria-modal','true');
+  overlay.innerHTML=`<div class="fullscreenbar"><strong>${escapeHtml(title||'Full screen')}</strong><button type="button" id="fullscreenClose">Close</button></div><div class="fullscreenbody"><img src="${src}" alt="${escapeHtml(title||'Full screen view')}"></div>`;
+  overlay.addEventListener('click',ev=>{if(ev.target===overlay||ev.target.classList.contains('fullscreenbody')||ev.target.tagName==='IMG')closeFullScreen()});
+  document.body.appendChild(overlay);
+  document.body.classList.add('fullscreenopen');
+  $('#fullscreenClose')?.focus();
+}
+function closeFullScreen(){
+  document.querySelector('.fullscreenviewer')?.remove();
+  document.body.classList.remove('fullscreenopen');
+}
+function openPlateFullScreen(id){
+  const s=specimens.find(x=>x.id===id);
+  if(s?.plate) openFullScreen(s.name,s.plate);
+}
+function canvasDataUrl(canvas){
+  try{return canvas?.toDataURL('image/png')||''}catch(e){return ''}
+}
+function openCanvasFullScreen(canvas,title){
+  const src=canvasDataUrl(canvas);
+  if(src) openFullScreen(title,src);
+}
+function openEntryInkFullScreen(){
+  if(activeStroke||inkPointerMoved)return;
+  const last=inkStrokes[inkStrokes.length-1];
+  if(last?.points?.length<=2){inkStrokes.pop();redrawInk()}
+  openCanvasFullScreen($('#inkCanvas'),`${specimens.find(s=>s.id===current)?.name||'Field record'} handwriting`);
+}
+function openSessionInkFullScreen(){
+  if(sessionInkActive||sessionInkPointerMoved)return;
+  const last=activeSession.ink?.[activeSession.ink.length-1];
+  if(last?.points?.length<=2){activeSession.ink.pop();redrawSessionInk()}
+  openCanvasFullScreen($('#sessionInkCanvas'),'Field Session handwriting');
+}
+function openPdfPageFullScreen(){
+  if(pageInkActive||pageInkPointerMoved)return;
+  const last=pageInkStrokes[pageInkStrokes.length-1];
+  if(last?.points?.length<=2){pageInkStrokes.pop();redrawPageInk()}
+  const pdf=$('#pdfCanvas'),ink=$('#pageInkCanvas');
+  if(!pdf)return;
+  const merged=document.createElement('canvas');
+  merged.width=pdf.width; merged.height=pdf.height;
+  const ctx=merged.getContext('2d');
+  ctx.drawImage(pdf,0,0);
+  if(ink) ctx.drawImage(ink,0,0,pdf.width,pdf.height);
+  openFullScreen(`Proof page ${annotationPage}`,canvasDataUrl(merged));
+}
+function turnCurrentBook(delta){
+  if(document.querySelector('.fullscreenviewer'))return;
+  const book=$('#content .book')||$('#bookPageWrap');
+  if(book){
+    book.style.setProperty('--turn-angle',delta>0?'1.6deg':'-1.6deg');
+    book.classList.remove('turning');
+    void book.offsetWidth;
+    book.classList.add('turning');
+  }
+  setTimeout(()=>goBookPage(delta),150);
+}
+function goBookPage(delta){
+  if(current==='proof'||$('#pdfCanvas')){
+    changeAnnoPage(delta);
+    return;
+  }
+  const i=specimens.findIndex(s=>s.id===current);
+  if(i>=0){
+    const next=specimens[Math.max(0,Math.min(specimens.length-1,i+delta))];
+    if(next.id!==current)showSpecimen(next.id);
+  }
+}
+function pageTurnControls(kind='specimen'){
+  const i=specimens.findIndex(s=>s.id===current);
+  const prevDisabled=kind==='proof'?annotationPage<=1:i<=0;
+  const nextDisabled=kind==='proof'?annotationPage>=92:i>=specimens.length-1;
+  return `<button class="pageedge prev" aria-label="Previous page" ${prevDisabled?'disabled':''} onclick="turnCurrentBook(-1)">‹</button><button class="pageedge next" aria-label="Next page" ${nextDisabled?'disabled':''} onclick="turnCurrentBook(1)">›</button>`;
 }
 function changeAnnoPage(delta){savePageInk(false);showAnnotator(annotationPage+delta)}
 function jumpAnnoPage(){savePageInk(false);showAnnotator(Number($('#annoPageInput').value)||annotationPage)}
@@ -280,13 +373,14 @@ function initPageInkCanvas(cssW,cssH){
  c.style.width=w+'px';c.style.height=h+'px';
  pageInkCtx=c.getContext('2d');pageInkCtx.setTransform(dpr,0,0,dpr,0,0);redrawPageInk();
  c.onpointerdown=beginPageInk;c.onpointermove=movePageInk;c.onpointerup=endPageInk;c.onpointercancel=endPageInk;
+ c.onclick=openPdfPageFullScreen;
 }
 function pagePoint(ev){
  const c=$('#pageInkCanvas'),r=c.getBoundingClientRect();
  return{x:(ev.clientX-r.left)/r.width,y:(ev.clientY-r.top)/r.height,p:ev.pressure||.5};
 }
-function beginPageInk(ev){if(ev.pointerType==='touch')return;ev.preventDefault();$('#pageInkCanvas').setPointerCapture?.(ev.pointerId);pageInkActive={pointerId:ev.pointerId,points:[pagePoint(ev)]};pageInkStrokes.push(pageInkActive);redrawPageInk()}
-function movePageInk(ev){if(!pageInkActive||pageInkActive.pointerId!==ev.pointerId)return;ev.preventDefault();pageInkActive.points.push(pagePoint(ev));redrawPageInk()}
+function beginPageInk(ev){if(ev.pointerType==='touch')return;ev.preventDefault();pageInkPointerMoved=false;$('#pageInkCanvas').setPointerCapture?.(ev.pointerId);pageInkActive={pointerId:ev.pointerId,points:[pagePoint(ev)]};pageInkStrokes.push(pageInkActive);redrawPageInk()}
+function movePageInk(ev){if(!pageInkActive||pageInkActive.pointerId!==ev.pointerId)return;ev.preventDefault();const next=pagePoint(ev),first=pageInkActive.points[0];if(Math.abs(next.x-first.x)>.006||Math.abs(next.y-first.y)>.006)pageInkPointerMoved=true;pageInkActive.points.push(next);redrawPageInk()}
 function endPageInk(ev){if(!pageInkActive||pageInkActive.pointerId!==ev.pointerId)return;pageInkActive.points.push(pagePoint(ev));pageInkActive=null;redrawPageInk()}
 function redrawPageInk(){
  const c=$('#pageInkCanvas');if(!c||!pageInkCtx)return;const r=c.getBoundingClientRect();pageInkCtx.clearRect(0,0,r.width,r.height);pageInkCtx.strokeStyle='#26251f';pageInkCtx.lineCap='round';pageInkCtx.lineJoin='round';
@@ -316,7 +410,7 @@ async function pullPageAnnotations(){
 
 
 let activeSession={id:null,title:'',date:'',specimenIds:[],observations:{},comparison:'',ink:[]};
-let sessionInkCtx=null,sessionInkActive=null;
+let sessionInkCtx=null,sessionInkActive=null,sessionInkPointerMoved=false;
 
 function sessionKey(){return`pfg:sessions:${edition}`}
 function getSessions(){try{return JSON.parse(localStorage.getItem(sessionKey()))||[]}catch(e){return[]}}
@@ -365,10 +459,11 @@ function showFieldSession(){
 function initSessionInk(){
  const c=$('#sessionInkCanvas');if(!c)return;const r=c.getBoundingClientRect(),dpr=Math.max(1,devicePixelRatio||1);
  c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);sessionInkCtx=c.getContext('2d');sessionInkCtx.setTransform(dpr,0,0,dpr,0,0);redrawSessionInk();
- c.onpointerdown=e=>{if(e.pointerType==='touch')return;e.preventDefault();c.setPointerCapture?.(e.pointerId);sessionInkActive={pointerId:e.pointerId,points:[sessionPoint(e)]};activeSession.ink.push(sessionInkActive);redrawSessionInk()};
- c.onpointermove=e=>{if(!sessionInkActive||sessionInkActive.pointerId!==e.pointerId)return;e.preventDefault();sessionInkActive.points.push(sessionPoint(e));redrawSessionInk()};
+ c.onpointerdown=e=>{if(e.pointerType==='touch')return;e.preventDefault();sessionInkPointerMoved=false;c.setPointerCapture?.(e.pointerId);sessionInkActive={pointerId:e.pointerId,points:[sessionPoint(e)]};activeSession.ink.push(sessionInkActive);redrawSessionInk()};
+ c.onpointermove=e=>{if(!sessionInkActive||sessionInkActive.pointerId!==e.pointerId)return;e.preventDefault();const next=sessionPoint(e),first=sessionInkActive.points[0];if(Math.abs(next.x-first.x)>.006||Math.abs(next.y-first.y)>.006)sessionInkPointerMoved=true;sessionInkActive.points.push(next);redrawSessionInk()};
  c.onpointerup=e=>{if(!sessionInkActive||sessionInkActive.pointerId!==e.pointerId)return;sessionInkActive.points.push(sessionPoint(e));sessionInkActive=null;redrawSessionInk()};
  c.onpointercancel=c.onpointerup;
+ c.onclick=openSessionInkFullScreen;
 }
 function sessionPoint(ev){const c=$('#sessionInkCanvas'),r=c.getBoundingClientRect();return{x:(ev.clientX-r.left)/r.width,y:(ev.clientY-r.top)/r.height,p:ev.pressure||.5}}
 function redrawSessionInk(){const c=$('#sessionInkCanvas');if(!c||!sessionInkCtx)return;const r=c.getBoundingClientRect();sessionInkCtx.clearRect(0,0,r.width,r.height);sessionInkCtx.strokeStyle='#26251f';sessionInkCtx.lineCap='round';sessionInkCtx.lineJoin='round';(activeSession.ink||[]).forEach(st=>{if(!st.points?.length)return;sessionInkCtx.beginPath();st.points.forEach((pt,i)=>{const x=pt.x*r.width,y=pt.y*r.height;if(i===0)sessionInkCtx.moveTo(x,y);else sessionInkCtx.lineTo(x,y)});const avg=st.points.reduce((a,p)=>a+(p.p||.5),0)/st.points.length;sessionInkCtx.lineWidth=1.25+avg*2.5;sessionInkCtx.stroke()})}
@@ -485,6 +580,7 @@ let registerFilter='all';
 let annotationPage=1;
 let pageInkStrokes=[];
 let pageInkActive=null;
+let pageInkPointerMoved=false;
 let pageInkCtx=null;
 let pdfDoc=null;
 let pdfZoom=1.15;
@@ -511,12 +607,12 @@ function showSpecimen(id){current=id;currentEntryId='current';let s=specimens.fi
  const assocs=s.associations.length?s.associations.join('<br>'):'Open field.';
  const proofLink=s.proof?`<a href="assets/current-proof-v2.pdf#page=${s.proof}" target="_blank">Read in current proof · p.${s.proof}</a>`:'<span>Current proof location not asserted here.</span>';
  const right=s.plate
-   ? `<img class="plate" src="${s.plate}" alt="${s.name} approved plate"/>`
+   ? `<img class="plate" src="${s.plate}" alt="${s.name} approved plate" role="button" tabindex="0" onclick="openPlateFullScreen('${s.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openPlateFullScreen('${s.id}')}"/>`
    : `<div class="blankplate"><div class="inner"><div class="eyebrow">Specimen record</div><h2>${s.name}</h2><p>No separate approved production plate is being substituted here. The digital edition keeps this space textual until an approved source exists.</p></div></div>`;
  const anchors=(s.anchors||[]).map(id=>anchorById(id)).filter(Boolean);
  const anchorHtml=anchors.length?anchors.map(a=>`<div class="anchorcard"><h4>${a.label}</h4><p>Stable content anchor · current proof p.${a.page}</p><div class="anchorlinks"><button onclick="showAnchor('${a.id}')">Open anchored page</button></div></div>`).join(''):'<p class="bodycopy">No stable cross-reference assigned.</p>';
  const lifecycle=['want_to_smell','sampled','owned','finished'].map(st=>`<button class="${d.collectionStatus===st?'active':''}" onclick="setCollectionStatus('${st}')">${collectionLabels[st]}</button>`).join('');
- $('#content').innerHTML=`<div class="book"><article class="page left"><div class="eyebrow">${s.chapter} · ${s.role}</div><h1>${s.name}</h1>${s.house?`<p class="lede">${s.house}</p>`:''}
+ $('#content').innerHTML=`<div class="book">${pageTurnControls('specimen')}<article class="page left"><div class="eyebrow">${s.chapter} · ${s.role}</div><h1>${s.name}</h1>${s.house?`<p class="lede">${s.house}</p>`:''}
  <div class="specimenfacts">
    <div class="factbox"><h3>Encounter</h3><p>${s.encounter}</p></div>
    <div class="factbox"><h3>Family</h3><p>${s.family}</p></div>
@@ -563,7 +659,7 @@ function showRegister(){current='register';renderNav($('#search').value);
  <div class="registergrid">${cards||'<p class="bodycopy">No specimens in this state yet.</p>'}</div><span class="folio">REGISTER</span></article></div>`;
  $('#noteTitle').textContent='Specimen Register';$('#xref').innerHTML='Choose a specimen to open its field record.';
 }
-function showProof(){current='proof';renderNav($('#search').value);$('#content').innerHTML=`<div class="book" style="display:block"><iframe class="proof" src="assets/current-proof-v2.pdf"></iframe></div>`;$('#noteTitle').textContent='Current proof';$('#xref').innerHTML='';}
+function showProof(){current='proof';renderNav($('#search').value);showAnnotator(annotationPage||1);$('#noteTitle').textContent='Current proof';$('#xref').innerHTML='Use the page edges or arrow keys to turn the proof pages.';}
 function showJournal(){current='journal';renderNav($('#search').value);let rows=[];for(const s of specimens){let d=getData(s.id);d.entries.forEach(e=>rows.push({s,e}));}
  rows.sort((a,b)=>(b.e.date||'').localeCompare(a.e.date||''));$('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">${edition==='personal'?'Personal':'Will'} edition</div><h1>Field Records</h1><p class="lede">A searchable history of observations attached to specimens.</p>${rows.length?rows.map(({s,e})=>`<div class="noteitem"><button onclick="openEntry('${s.id}','${e.id}')"><strong>${s.name}</strong><time>${e.date}</time><div>${escapeHtml((e.text||e.fields?.firstImpression||e.fields?.remindsMe||'[handwritten entry]')).slice(0,240)}${(e.text||'').length>240?'…':''}</div></button></div>`).join(''):'<p class="bodycopy">No field records yet.</p>'}</article></div>`;}
 function showAbout(){current='about';renderNav($('#search').value);$('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">Working prototype</div><h1>A book with memory</h1><p class="lede">The reading object stays visually book-like, while specimens and field records become addressable data.</p><p class="bodycopy">This build adds Field Sessions: select one or more source-supported specimens, record opening / 15-minute / 1-hour / later observations, compare them side by side, add a handwritten Apple Pencil session page, and save the result back into each fragrance’s dated field history. Records currently live only in this browser. A production build can replace local storage with authenticated cloud sync without changing the book model.</p><div class="callout"><b>Not yet canonical:</b> This prototype is an interaction proof, not a final publication layout. Missing plates, recommendation sets, and unresolved source material remain unresolved.</div></article></div>`;}
@@ -722,13 +818,14 @@ function canvasPoint(ev){
 function beginInk(ev){
   if(ev.pointerType==='touch' && !$('#fingerInk').checked)return;
   ev.preventDefault();
+  inkPointerMoved=false;
   $('#inkCanvas').setPointerCapture?.(ev.pointerId);
   activeStroke={pointerId:ev.pointerId,points:[canvasPoint(ev)]};
   inkStrokes.push(activeStroke); redrawInk();
 }
 function moveInk(ev){
   if(!activeStroke||activeStroke.pointerId!==ev.pointerId)return;
-  ev.preventDefault(); activeStroke.points.push(canvasPoint(ev)); redrawInk();
+  ev.preventDefault(); const next=canvasPoint(ev),first=activeStroke.points[0];if(Math.abs(next.x-first.x)>.006||Math.abs(next.y-first.y)>.006)inkPointerMoved=true; activeStroke.points.push(next); redrawInk();
 }
 function endInk(ev){
   if(!activeStroke||activeStroke.pointerId!==ev.pointerId)return;
@@ -740,12 +837,19 @@ $('#saveNote').onclick=saveCurrent;$('#owned').onchange=saveCurrent;$('#newNote'
 $('#typeMode').onclick=()=>setNoteMode('type');$('#inkMode').onclick=()=>setNoteMode('ink');
 $('#undoInk').onclick=()=>{inkStrokes.pop();redrawInk()};$('#clearInk').onclick=()=>{if(confirm('Clear all handwriting on this entry?')){inkStrokes=[];redrawInk()}};
 $('#inkCanvas').addEventListener('pointerdown',beginInk);$('#inkCanvas').addEventListener('pointermove',moveInk);$('#inkCanvas').addEventListener('pointerup',endInk);$('#inkCanvas').addEventListener('pointercancel',endInk);
+$('#inkCanvas').addEventListener('click',openEntryInkFullScreen);
+window.addEventListener('keydown',ev=>{
+  if(ev.key==='Escape')closeFullScreen();
+  if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
+  if(ev.key==='ArrowRight')turnCurrentBook(1);
+  if(ev.key==='ArrowLeft')turnCurrentBook(-1);
+});
 window.addEventListener('resize',()=>{if(noteMode==='ink')resizeInkCanvas();if($('#pdfCanvas'))renderPdfPage(annotationPage)});
 $('#signInBtn').onclick=sendMagicLink;$('#syncNowBtn').onclick=syncAll;$('#signOutBtn').onclick=signOutCloud;
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>({proof:showProof,journal:showJournal,about:showAbout}[b.dataset.view]()));
 $('#exportBtn').onclick=()=>{let payload={version:1,exported:new Date().toISOString(),records:{personal:{},will:{}}};['personal','will'].forEach(ed=>specimens.forEach(s=>{try{payload.records[ed][s.id]=JSON.parse(localStorage.getItem(`pfg.${ed}.${s.id}`))||{owned:false,entries:[]}}catch(e){}}));let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='personal-field-guides-records.json';a.click();URL.revokeObjectURL(a.href)};
 $('#importInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let p=JSON.parse(await f.text());['personal','will'].forEach(ed=>Object.entries(p.records?.[ed]||{}).forEach(([id,d])=>localStorage.setItem(`pfg.${ed}.${id}`,JSON.stringify(d))));updateEditionUI();alert('Field records imported.')}catch(err){alert('Could not import this file.')}};
-window.focusNote=focusNote;window.openEntry=openEntry;
+window.focusNote=focusNote;window.openEntry=openEntry;window.openPlateFullScreen=openPlateFullScreen;window.turnCurrentBook=turnCurrentBook;
 renderNav();updateEditionUI();initCloud();showSpecimen(current);
 </script>
 

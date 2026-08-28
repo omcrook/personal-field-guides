@@ -1,5 +1,5 @@
 
-const CACHE='pfg-fragrance-v1-5';
+const CACHE='pfg-fragrance-v1-6';
 const APP_SHELL=[
   './',
   './index.html',
@@ -7,6 +7,7 @@ const APP_SHELL=[
   './content_anchor_manifest_v1.json',
   './assets/current-proof-v2.pdf',
   './assets/4711.png',
+  './assets/4711-corrected.png',
   './assets/marlborough.png',
   './assets/green-water.jpeg',
   './icons/icon-192.svg',

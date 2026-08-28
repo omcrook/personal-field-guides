@@ -1,5 +1,5 @@
 
-const CACHE='pfg-fragrance-v1-4';
+const CACHE='pfg-fragrance-v1-5';
 const APP_SHELL=[
   './',
   './index.html',

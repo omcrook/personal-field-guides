@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Personal Field Guides — Digital Prototype</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<style>
+:root{--paper:#efe8d8;--paper2:#f7f2e8;--ink:#26251f;--muted:#736e62;--line:#b8ae99;--deep:#33352f;--max:1440px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#d7d0c2;color:var(--ink);font-family:Georgia,"Times New Roman",serif}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.shell{max-width:var(--max);margin:0 auto;min-height:100vh;background:var(--paper);display:grid;grid-template-columns:260px 1fr 330px;box-shadow:0 0 40px #0002}
+.rail,.inspector{padding:24px 18px;position:sticky;top:0;height:100vh;overflow:auto;background:#e6dece}
+.rail{border-right:1px solid var(--line)}.inspector{border-left:1px solid var(--line)}
+.brand{letter-spacing:.18em;text-transform:uppercase;font-size:11px;line-height:1.5}.brand strong{display:block;font-size:15px;letter-spacing:.08em;margin-top:4px}
+.small{font-size:12px;color:var(--muted);line-height:1.45}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.navbutton{display:block;width:100%;text-align:left;border:0;background:transparent;padding:9px 8px;margin:2px 0;border-radius:2px}.navbutton:hover,.navbutton.active{background:#fff7}
+.navbutton .kicker{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);display:block}
+.main{padding:30px;min-width:0}.toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:18px}.toolbar .group{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip,button.action{border:1px solid var(--line);background:var(--paper2);padding:7px 10px;border-radius:2px;font-size:12px}.chip strong{font-weight:normal;letter-spacing:.08em;text-transform:uppercase}
+.book{background:var(--paper2);min-height:78vh;box-shadow:0 12px 30px #0002;border:1px solid #cfc5b1;display:grid;grid-template-columns:1fr 1fr;position:relative}
+.book:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#c7bca8;box-shadow:0 0 14px #0002}
+.page{padding:54px 48px;min-width:0;position:relative}.folio{position:absolute;bottom:22px;font-size:10px;letter-spacing:.12em;color:var(--muted)}.left .folio{left:48px}.right .folio{right:48px}
+.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:var(--muted)}h1{font-size:37px;font-weight:normal;line-height:1.05;margin:12px 0 12px}h2{font-size:22px;font-weight:normal;margin:22px 0 8px}.lede{font-size:17px;line-height:1.65}.bodycopy{font-size:15px;line-height:1.72}.plate{width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;margin:auto}.meta{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}.meta div{font-size:11px}.meta b{display:block;text-transform:uppercase;letter-spacing:.12em;font-size:9px;color:var(--muted);margin-bottom:3px}
+.fieldlabel{display:flex;justify-content:space-between;align-items:center;margin:15px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.12em}.owned{display:flex;align-items:center;gap:8px;margin:8px 0 18px}.owned input{width:18px;height:18px;accent-color:#555}
+textarea{width:100%;min-height:180px;background:#f9f5ec;border:1px solid var(--line);padding:12px;resize:vertical;line-height:1.45}
+.entrymode{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin:8px 0 10px}.entrymode button{border:0;background:transparent;padding:8px;font-size:11px;text-transform:uppercase;letter-spacing:.1em}.entrymode button+button{border-left:1px solid var(--line)}.entrymode button.active{background:#f9f5ec}
+.quickfields{border:1px solid var(--line);padding:10px;margin:10px 0;background:#eee6d6}.quickfield{margin:8px 0}.quickfield label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:4px}.quickfield input{width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;padding:5px 2px;outline:none}.quickfield input:focus{border-bottom-color:var(--deep)}
+.inkwrap{display:none}.inkwrap.active{display:block}.typewrap.hidden{display:none}.inkbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:6px 0}.inkbar button,.inkbar label{border:1px solid var(--line);background:transparent;padding:6px 8px;font-size:10px;letter-spacing:.06em}.inkbar label{display:flex;align-items:center;gap:5px}.inkcanvas{width:100%;height:300px;background:#fbf7ee;border:1px solid var(--line);display:block;touch-action:none;cursor:crosshair}.inkhint{font-size:10px;color:var(--muted);line-height:1.4;margin-top:6px}
+.save{width:100%;margin-top:8px;border:1px solid var(--deep);background:var(--deep);color:#f7f2e8;padding:9px}.ghost{width:100%;margin-top:8px;border:1px solid var(--line);background:transparent;padding:8px}
+.search{width:100%;padding:9px;border:1px solid var(--line);background:#f5efe4;margin:12px 0}.noteitem{border-top:1px solid var(--line);padding:10px 0}.noteitem button{border:0;background:transparent;padding:0;text-align:left}.noteitem time{display:block;font-size:9px;color:var(--muted);letter-spacing:.06em}.status{font-size:11px;color:var(--muted);min-height:16px;margin-top:8px}.proof{width:100%;height:75vh;border:0;background:white}
+.callout{border:1px solid var(--line);padding:12px;margin:14px 0;background:#f5efe4;font-size:12px;line-height:1.45}.xref{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.xref button,.xref a{border:1px solid var(--line);background:transparent;padding:6px 8px;font-size:11px;text-decoration:none;color:inherit}
+@media(max-width:1050px){.shell{grid-template-columns:210px 1fr}.inspector{position:fixed;right:0;top:0;width:320px;z-index:5;box-shadow:-10px 0 30px #0003;transform:translateX(100%);transition:.2s}.inspector.open{transform:none}.book{grid-template-columns:1fr}.book:before{display:none}.page.left{display:none}.main{padding:18px}}
+@media(max-width:700px){.shell{display:block}.rail{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}.main{padding:10px}.page{padding:36px 24px}.book{min-height:60vh}.toolbar{align-items:flex-start}.brand strong{font-size:14px}}
+.syncbox{border:1px solid var(--line);padding:10px;margin:10px 0;background:#eee6d6}.syncrow{display:flex;justify-content:space-between;gap:10px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}.syncbox input{width:100%;border:1px solid var(--line);background:#f9f5ec;padding:8px;margin-bottom:6px}
+.registergrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}.regcard{border:1px solid var(--line);background:transparent;padding:16px;text-align:left;min-height:150px}.regcard:hover{background:#eee6d6}.regcard .regname{font-family:Georgia,serif;font-size:20px;line-height:1.05;margin:4px 0 12px}.regmeta{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);line-height:1.6}.statusrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.statuspill{border:1px solid var(--line);padding:4px 6px;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.specimenfacts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}.factbox{border-top:1px solid var(--line);padding-top:8px}.factbox h3{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 6px}.factbox p{margin:0;line-height:1.5}.materials{line-height:1.7}.blankplate{height:100%;min-height:520px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);padding:30px;text-align:center}.blankplate .inner{max-width:280px}.blankplate h2{font-family:Georgia,serif;font-weight:normal;font-size:28px;margin:0 0 10px}.blankplate p{font-size:12px;color:var(--muted);line-height:1.6}.ownedbadge{font-size:10px;letter-spacing:.09em;text-transform:uppercase;margin-top:10px}
+@media(max-width:800px){.registergrid,.specimenfacts{grid-template-columns:1fr}}
+.collectionbar{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 20px}.collectionbar button{border:1px solid var(--line);background:transparent;padding:7px 9px;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.collectionbar button.active{background:var(--deep);color:#f7f2e8}.lifecycle{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0}.lifecycle button{border:1px solid var(--line);background:transparent;padding:9px 6px;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.lifecycle button.active{background:var(--deep);color:#f7f2e8}.lifecyclehint{font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:14px}.summarygrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0 20px}.summarycell{border-top:1px solid var(--line);padding-top:7px}.summarycell b{display:block;font-family:Georgia,serif;font-size:21px;font-weight:normal}.summarycell span{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+@media(max-width:800px){.lifecycle,.summarygrid{grid-template-columns:1fr 1fr}}
+.annotator{display:grid;grid-template-columns:240px 1fr;gap:18px}.annotools{border:1px solid var(--line);padding:12px;background:#eee6d6;height:max-content}.annotools h3{font-family:Georgia,serif;font-weight:normal;margin:0 0 10px}.annotools button,.annotools input{width:100%;margin:4px 0}.bookpagewrap{position:relative;border:1px solid var(--line);background:#ddd;min-height:720px;overflow:hidden}.pdfstage{position:relative;margin:0 auto;background:white;box-shadow:0 8px 28px rgba(0,0,0,.12);width:max-content;max-width:100%}.pdfcanvas{display:block;max-width:100%;height:auto}.pageink{position:absolute;inset:0;width:100%;height:100%;touch-action:none;pointer-events:auto;cursor:crosshair}.annotstatus{font-size:10px;color:var(--muted);line-height:1.5;margin-top:8px}.annopage{font-size:12px;margin:8px 0 12px}.annonav{display:grid;grid-template-columns:1fr 1fr;gap:6px}.annonav button{width:auto}.zoomrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}.zoomrow button{width:auto}.renderstate{font-size:10px;color:var(--muted);margin:8px 0;min-height:1.3em}.annotationhint{font-size:11px;line-height:1.55;color:var(--muted);margin:12px 0}
+@media(max-width:900px){.annotator{grid-template-columns:1fr}.bookpagewrap iframe{height:620px}.bookpagewrap{min-height:620px}}
+.anchorcard{border:1px solid var(--line);padding:10px;margin:10px 0;background:#f5efe3}.anchorcard h4{font-family:Georgia,serif;font-weight:normal;margin:0 0 5px}.anchorcard p{margin:0;font-size:10px;color:var(--muted);line-height:1.5}.anchorlinks{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.anchorlinks button,.anchorlinks a{border:1px solid var(--line);background:transparent;padding:6px 8px;font-size:9px;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;color:inherit}.xrefgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.xrefitem{border-top:1px solid var(--line);padding-top:7px}.xrefitem b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em}.xrefitem span{font-size:11px;color:var(--muted)}.anchorname{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:8px}.anchorbadge{display:inline-block;border:1px solid var(--line);padding:4px 6px;font-size:9px;text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+@media(max-width:800px){.xrefgrid{grid-template-columns:1fr}}
+.recform{border:1px solid var(--line);background:#eee6d6;padding:14px;margin:14px 0}.recform input,.recform textarea,.recform select{width:100%;border:1px solid var(--line);background:#f9f5ec;padding:8px;margin:4px 0 9px}.recgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.reccard{border:1px solid var(--line);padding:14px;background:transparent}.reccard h3{font-family:Georgia,serif;font-weight:normal;font-size:20px;margin:0 0 4px}.reccard .house{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}.recstate{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.recstate button{border:1px solid var(--line);background:transparent;padding:5px 7px;font-size:9px;text-transform:uppercase;letter-spacing:.07em}.recstate button.active{background:var(--deep);color:#f7f2e8}.recmeta{font-size:10px;color:var(--muted);line-height:1.5}.recactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.recactions button{border:1px solid var(--line);background:transparent;padding:6px 8px;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.recommendationflow{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:8px 0 14px}.emptyrec{border:1px dashed var(--line);padding:18px;text-align:center;color:var(--muted);font-size:11px}
+@media(max-width:800px){.recgrid{grid-template-columns:1fr}}
+.sessionform{border:1px solid var(--line);background:#eee6d6;padding:14px;margin:14px 0}.sessionform input,.sessionform textarea{width:100%;border:1px solid var(--line);background:#f9f5ec;padding:8px;margin:4px 0 9px}.sessionpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.pickitem{border:1px solid var(--line);padding:9px;background:transparent;text-align:left}.pickitem.active{background:var(--deep);color:#f7f2e8}.sessiongrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}.sessioncard{border:1px solid var(--line);padding:14px}.sessioncard h3{font-family:Georgia,serif;font-weight:normal;margin:0 0 10px}.timedrow{display:grid;grid-template-columns:110px 1fr;gap:8px;align-items:start;margin:8px 0}.timedrow label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding-top:8px}.timedrow textarea{min-height:70px}.comparebox{border:1px solid var(--line);padding:14px;margin:14px 0;background:#f5efe3}.sessionhistory{margin-top:18px}.sessionhistory .reccard{margin-bottom:8px}.sessionink{margin-top:10px}.sessionink canvas{width:100%;height:260px;background:#fbf7ee;border:1px solid var(--line);display:block;touch-action:none}.sessiontoolbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.sessiontoolbar button{border:1px solid var(--line);background:transparent;padding:6px 8px;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:800px){.sessionpick,.sessiongrid{grid-template-columns:1fr}.timedrow{grid-template-columns:1fr}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs" type="module"></script>
+<script type="module">
+  import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs';
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs';
+  window.PFG_PDFJS=pdfjsLib;
+  window.dispatchEvent(new Event('pfg-pdfjs-ready'));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">The Personal Field Guides<strong>No. 01 — Fragrance</strong></div>
+    <p class="small">Working digital prototype. Shared book core; Personal and Will field records remain separate.</p>
+    <hr />
+    <input id="search" class="search" placeholder="Search specimens + notes" />
+    <div id="nav"></div>
+    <hr />
+    <button class="navbutton" data-view="proof"><span class="kicker">Book</span>Current flowed proof</button>
+    <button class="navbutton" data-view="journal"><span class="kicker">Field records</span>Journal index</button>
+    <button class="navbutton" data-view="about"><span class="kicker">Prototype</span>How this works</button>
+  </aside>
+  <main class="main">
+    <div class="toolbar">
+      <div class="group"><span class="chip">Edition: <strong id="editionLabel">Personal</strong></span><button class="action" id="switchEdition">Switch to Will</button></div>
+      <div class="group"><button class="action" id="openNotes">Field note</button><button class="action" id="exportBtn">Export records</button><label class="action" style="cursor:pointer">Import<input type="file" id="importInput" accept="application/json" hidden /></label></div>
+    </div>
+    <section id="content"></section>
+  </main>
+  <aside class="inspector" id="inspector">
+    <div class="eyebrow">Field record</div>
+    <h2 id="noteTitle">Select a specimen</h2>
+    <div class="owned"><input type="checkbox" id="owned" /><label for="owned">Bottle owned / in collection</label></div>
+    <div class="fieldlabel"><span>Field observations</span><span id="noteDate"></span></div>
+    <div class="quickfields">
+      <div class="quickfield"><label for="firstImpression">First impression</label><input id="firstImpression" autocomplete="off" /></div>
+      <div class="quickfield"><label for="remindsMe">Reminds me of</label><input id="remindsMe" autocomplete="off" /></div>
+      <div class="quickfield"><label for="afterHour">After an hour</label><input id="afterHour" autocomplete="off" /></div>
+      <div class="quickfield"><label for="wearAgain">Would I wear it?</label><input id="wearAgain" autocomplete="off" /></div>
+    </div>
+    <div class="entrymode">
+      <button id="typeMode" class="active">Type</button>
+      <button id="inkMode">Write / draw</button>
+    </div>
+    <div id="typeWrap" class="typewrap">
+      <textarea id="note" placeholder="Type a journal note, question, association, or wear-test observation…"></textarea>
+    </div>
+    <div id="inkWrap" class="inkwrap">
+      <div class="inkbar">
+        <button id="undoInk" type="button">Undo stroke</button>
+        <button id="clearInk" type="button">Clear page</button>
+        <label><input type="checkbox" id="fingerInk" /> Finger drawing</label>
+      </div>
+      <canvas id="inkCanvas" class="inkcanvas"></canvas>
+      <div class="inkhint">Apple Pencil works directly in Safari/iPadOS through pen input. Pressure is recorded when the browser provides it. Finger drawing is off by default to reduce accidental marks.</div>
+    </div>
+    <button class="save" id="saveNote">Save field record</button>
+    <button class="ghost" id="newNote">New dated entry</button>
+    <div id="saveStatus" class="status"></div>
+    <hr />
+    <div class="eyebrow">Cross-reference</div>
+    <div id="xref" class="xref"></div>
+  </aside>
+</div>
+<script>
+const specimens = [
+ {id:'4711',anchors:['4711-memory','citrus-aurantium'],name:'4711',house:'Mäurer & Wirtz',encounter:'THE TEST',family:'Citrus / Herbal / Fresh',materials:['Bergamot','Lemon','Orange','Lavender','Rosemary','Neroli','Petitgrain'],associations:['Grandpa','Fishing','Time','Attention','Inclusion'],fieldNote:'Sometimes the ingredients remain perfectly distinct. Sometimes memory overwhelms the formula entirely. Both are true.',role:'Memory plate',plate:'assets/4711.png',proof:11,chapter:'Chapter I',summary:'Grandpa / citrus-herbal memory',source:'Locked visual master'},
+ {id:'marlborough',anchors:['marlborough-essay','resin-spice'],name:'Geo. F. Trumper Marlborough',house:'Geo. F. Trumper',encounter:'THE COURTSHIP',family:'Tobacco / Leather / Warm',materials:[],associations:['A shower','Sunlight coming through the window','Skin with skin','An afternoon with nowhere else we particularly needed to be'],fieldNote:'A fragrance can become an invitation to a life you imagine yourself living.',role:'Memory plate',plate:'assets/marlborough.png',proof:18,chapter:'Chapter II',summary:'Marlborough essay adjacency',source:'Locked visual master'},
+ {id:'chanel-pour-monsieur',anchors:['marlborough-essay'],name:'Chanel Pour Monsieur',house:'Chanel',encounter:'THE COURTSHIP',family:'Citrus / Woods / Sophistication',materials:[],associations:['Craft','Confidence','The person I was constructing'],fieldNote:'A fragrance can be a sketch of a future self. Not a costume. A possibility.',role:'Specimen',plate:null,proof:null,chapter:'Chapter II',summary:'Craft / confidence / future self',source:'No approved standalone plate in current source set'},
+ {id:'cool-water',anchors:['becoming'],name:'Cool Water',house:'',encounter:'THE COURTSHIP',family:'Fresh / Aquatic / Green',materials:[],associations:['Possibility','A doorway','Something was next','Anything'],fieldNote:'What?',role:'Specimen',plate:null,proof:null,chapter:'Becoming',summary:'Possibility / doorway',source:'No approved standalone plate in current source set'},
+ {id:'hacivat',anchors:['river-stone','petrichor'],name:'Hacivat',house:'',encounter:'THE CHALLENGE',family:'Green / Moss / Mineral',materials:['Moss','Dampness','Wet stone','Mineral air'],associations:['The Merced','Granite','River','Mist'],fieldNote:'The river may not explain the formula. It explains me. I just had to remember it first.',role:'Specimen',plate:null,proof:null,chapter:'Chapter III',summary:'The Merced / wet stone / mineral air',source:'No approved standalone Hacivat plate in current source set'},
+ {id:'baccarat-rouge-540',anchors:['best-of-fire'],name:'Baccarat Rouge 540',house:'',encounter:'THE OUTLIER',family:'Amber / Woody / Sweet',materials:[],associations:['Fire','Youth','Possibility'],fieldNote:"You shouldn't be here. But here you are. Apparently I don't know myself as well as I thought.",role:'Specimen',plate:null,proof:42,chapter:'Chapter VI',summary:'Fire / youth / possibility',source:'Best of Fire plate unresolved'},
+ {id:'green-water',anchors:['green-water','in-parallel'],name:'Green Water',house:'',encounter:'THE COURTSHIP',family:'Citrus / Green / Fresh',materials:[],associations:['Amy','Will','Maddie','Garden','Continuity'],fieldNote:'Not because it reminds me of who I was. Because it reminds me of what I was, who I am, and where I hope to go.',role:'Memory / family plate',plate:'assets/green-water.jpeg',proof:47,chapter:'Chapter VII',summary:'Family / garden / continuity',source:'Locked visual master'}
+];
+
+const contentAnchors = [
+ {id:'intro',label:'Introduction',page:4,type:'essay'},
+ {id:'citrus-aurantium',label:'Citrus Aurantium',page:8,type:'plate'},
+ {id:'4711-memory',label:'4711 / Grandpa',page:11,type:'memory'},
+ {id:'resin-spice',label:'Resin, Spice, Tobacco & Leather',page:15,type:'plate'},
+ {id:'marlborough-essay',label:'Marlborough',page:18,type:'essay'},
+ {id:'petrichor',label:'Petrichor',page:24,type:'plate'},
+ {id:'river-stone',label:'River Stone / The Merced',page:27,type:'memory'},
+ {id:'garage',label:'The Garage',page:31,type:'plate'},
+ {id:'objects-of-smell',label:'Objects of Smell',page:34,type:'plate'},
+ {id:'becoming',label:'Becoming',page:36,type:'chapter'},
+ {id:'best-of-fire',label:'The Best of Fire / Baccarat Rouge 540',page:42,type:'plate'},
+ {id:'green-water',anchors:['green-water','in-parallel'],label:'Green Water',page:47,type:'essay'},
+ {id:'in-parallel',label:'In Parallel',page:52,type:'chapter'},
+ {id:'specimen-register',label:'Specimen Register',page:58,type:'register'},
+ {id:'discovery-register',label:'Discovery Register',page:90,type:'register'},
+ {id:'field-record',label:'Field Record',page:91,type:'register'},
+ {id:'undiscovered-specimens',label:'Undiscovered Specimens',page:92,type:'plate'}
+];
+function anchorById(id){return contentAnchors.find(a=>a.id===id)}
+function anchorForPage(page){
+  let best=contentAnchors[0];
+  for(const a of contentAnchors){if(a.page<=page && a.page>=best.page)best=a}
+  return best;
+}
+function anchorPage(id){return anchorById(id)?.page||1}
+function showAnchor(id){
+  const a=anchorById(id); if(!a)return;
+  showAnnotator(a.page);
+}
+
+let edition=localStorage.getItem('pfg.edition')||'personal';
+const SUPABASE_URL='https://udwxclhchfaayafjfwbn.supabase.co';
+const SUPABASE_KEY='sb_publishable_08atTqj8NEjNTzmVWcJPKA_PAqBTI7b';
+const cloud=window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+let cloudUser=null;
+let current=specimens[0].id;
+let currentEntryId='current';
+let noteMode='type';
+let inkStrokes=[];
+let activeStroke=null;
+let inkCtx=null;
+const $=s=>document.querySelector(s);
+function key(id){return `pfg.${edition}.${id}`}
+function blankData(){return{owned:false,collectionStatus:'unmarked',entries:[]}}
+function normalizeEntry(e){return Object.assign({id:'',date:'',text:'',fields:{firstImpression:'',remindsMe:'',afterHour:'',wearAgain:''},ink:[]},e||{}, {fields:Object.assign({firstImpression:'',remindsMe:'',afterHour:'',wearAgain:''},(e||{}).fields||{}),ink:Array.isArray((e||{}).ink)?e.ink:[]})}
+function getData(id){try{let d=JSON.parse(localStorage.getItem(key(id)))||blankData();d.entries=(d.entries||[]).map(normalizeEntry);d.collectionStatus=d.collectionStatus||((d.owned)?'owned':'unmarked'); return Object.assign(blankData(),d)}catch(e){return blankData()}}
+function setData(id,d){localStorage.setItem(key(id),JSON.stringify(d))}
+function renderNav(filter=''){
+ const q=filter.trim().toLowerCase();
+ $('#nav').innerHTML=specimens.filter(s=>!q||[s.name,s.house,s.encounter,s.family,s.summary,...s.materials,...s.associations,...(s.anchors||[]).map(id=>anchorById(id)?.label||id),collectionLabels[getData(s.id).collectionStatus||'unmarked']].join(' ').toLowerCase().includes(q)||getData(s.id).entries.some(e=>[e.text,...Object.values(e.fields||{})].join(' ').toLowerCase().includes(q))).map(s=>`<button class="navbutton ${current===s.id?'active':''}" data-specimen="${s.id}"><span class="kicker">${s.chapter}</span>${s.name}</button>`).join('');
+ document.querySelectorAll('[data-specimen]').forEach(b=>b.onclick=()=>showSpecimen(b.dataset.specimen));
+}
+function updateEditionUI(){ $('#editionLabel').textContent=edition==='personal'?'Personal':'Will'; $('#switchEdition').textContent=edition==='personal'?'Switch to Will':'Switch to Personal'; loadInspector(); renderNav($('#search').value); }
+
+
+function annoKey(page){return`pfg:pageanno:${edition}:${page}`}
+function getPageAnno(page){try{return JSON.parse(localStorage.getItem(annoKey(page)))||[]}catch(e){return[]}}
+function setPageAnno(page,strokes){localStorage.setItem(annoKey(page),JSON.stringify(strokes))}
+function showAnnotator(page=annotationPage){
+  annotationPage=Math.max(1,Math.min(92,Number(page)||1));
+  pageInkStrokes=getPageAnno(annotationPage);
+  $('#content').innerHTML=`<div class="annotator">
+    <aside class="annotools">
+      <div class="eyebrow">${edition==='personal'?'Personal':'Will'} annotations</div>
+      <h3>Book page</h3>
+      <div class="annonav"><button class="ghost" onclick="changeAnnoPage(-1)">Previous</button><button class="ghost" onclick="changeAnnoPage(1)">Next</button></div>
+      <input id="annoPageInput" type="number" min="1" max="92" value="${annotationPage}" />
+      <button class="ghost" onclick="jumpAnnoPage()">Go to page</button>
+      <div class="zoomrow"><button class="ghost" onclick="setPdfZoom(-.1)">−</button><button class="ghost" onclick="fitPdfWidth()">Fit</button><button class="ghost" onclick="setPdfZoom(.1)">+</button></div>
+      <div class="annopage">Current proof page: <b>${annotationPage}</b></div>
+      <div id="annoAnchor" class="anchorname"></div>
+      <div id="pdfRenderState" class="renderstate">Rendering page…</div>
+      <button class="ghost" onclick="undoPageInk()">Undo stroke</button>
+      <button class="ghost" onclick="clearPageInk()">Clear annotations</button>
+      <button class="save" onclick="savePageInk()">Save annotations</button>
+      <div id="annoSaveState" class="annotstatus"></div>
+      <div class="annotationhint">Apple Pencil marks are registered to the rendered PDF page itself. Zooming or resizing redraws both page and ink from normalized coordinates.</div>
+    </aside>
+    <section class="bookpagewrap" id="bookPageWrap">
+      <div class="pdfstage" id="pdfStage">
+        <canvas id="pdfCanvas" class="pdfcanvas"></canvas>
+        <canvas id="pageInkCanvas" class="pageink"></canvas>
+      </div>
+    </section>
+  </div>`;
+  const a=anchorForPage(annotationPage);
+  if($('#annoAnchor')) $('#annoAnchor').innerHTML=`Anchored to <span class="anchorbadge">${a.label}</span>`;
+  renderPdfPage(annotationPage);
+}
+function changeAnnoPage(delta){savePageInk(false);showAnnotator(annotationPage+delta)}
+function jumpAnnoPage(){savePageInk(false);showAnnotator(Number($('#annoPageInput').value)||annotationPage)}
+async function ensurePdf(){
+  if(pdfDoc) return pdfDoc;
+  if(pdfLoadPromise) return pdfLoadPromise;
+  pdfLoadPromise=new Promise((resolve,reject)=>{
+    const load=async()=>{
+      try{
+        const lib=window.PFG_PDFJS;
+        if(!lib) return reject(new Error('PDF renderer not available'));
+        pdfDoc=await lib.getDocument('assets/current-proof-v2.pdf').promise;
+        resolve(pdfDoc);
+      }catch(e){reject(e)}
+    };
+    if(window.PFG_PDFJS) load();
+    else window.addEventListener('pfg-pdfjs-ready',load,{once:true});
+  });
+  return pdfLoadPromise;
+}
+async function renderPdfPage(pageNo){
+  const state=$('#pdfRenderState');
+  try{
+    if(state) state.textContent='Rendering page…';
+    const doc=await ensurePdf();
+    annotationPage=Math.max(1,Math.min(doc.numPages,pageNo));
+    const page=await doc.getPage(annotationPage);
+    const wrap=$('#bookPageWrap');
+    const natural=page.getViewport({scale:1});
+    const available=Math.max(320,(wrap?.clientWidth||900)-2);
+    const baseScale=Math.min(1.65,available/natural.width);
+    const viewport=page.getViewport({scale:baseScale*pdfZoom});
+    const canvas=$('#pdfCanvas'),stage=$('#pdfStage');
+    const dpr=Math.max(1,window.devicePixelRatio||1);
+    canvas.width=Math.round(viewport.width*dpr);canvas.height=Math.round(viewport.height*dpr);
+    canvas.style.width=viewport.width+'px';canvas.style.height=viewport.height+'px';
+    stage.style.width=viewport.width+'px';stage.style.height=viewport.height+'px';
+    const ctx=canvas.getContext('2d');
+    await page.render({canvasContext:ctx,viewport,transform:dpr===1?null:[dpr,0,0,dpr,0,0]}).promise;
+    initPageInkCanvas(viewport.width,viewport.height);
+    if(state) state.textContent=`Rendered ${Math.round(viewport.width)} × ${Math.round(viewport.height)} px · ${Math.round(pdfZoom*100)}%`;
+  }catch(e){
+    console.error(e);
+    if(state) state.textContent='Could not render this PDF page: '+(e.message||String(e));
+  }
+}
+function setPdfZoom(delta){pdfZoom=Math.max(.7,Math.min(2.2,pdfZoom+delta));renderPdfPage(annotationPage)}
+function fitPdfWidth(){pdfZoom=1;renderPdfPage(annotationPage)}
+function initPageInkCanvas(cssW,cssH){
+ const c=$('#pageInkCanvas'); if(!c)return;
+ const w=cssW||$('#pdfCanvas')?.clientWidth||1,h=cssH||$('#pdfCanvas')?.clientHeight||1;
+ const dpr=Math.max(1,window.devicePixelRatio||1);
+ c.width=Math.max(1,Math.round(w*dpr));c.height=Math.max(1,Math.round(h*dpr));
+ c.style.width=w+'px';c.style.height=h+'px';
+ pageInkCtx=c.getContext('2d');pageInkCtx.setTransform(dpr,0,0,dpr,0,0);redrawPageInk();
+ c.onpointerdown=beginPageInk;c.onpointermove=movePageInk;c.onpointerup=endPageInk;c.onpointercancel=endPageInk;
+}
+function pagePoint(ev){
+ const c=$('#pageInkCanvas'),r=c.getBoundingClientRect();
+ return{x:(ev.clientX-r.left)/r.width,y:(ev.clientY-r.top)/r.height,p:ev.pressure||.5};
+}
+function beginPageInk(ev){if(ev.pointerType==='touch')return;ev.preventDefault();$('#pageInkCanvas').setPointerCapture?.(ev.pointerId);pageInkActive={pointerId:ev.pointerId,points:[pagePoint(ev)]};pageInkStrokes.push(pageInkActive);redrawPageInk()}
+function movePageInk(ev){if(!pageInkActive||pageInkActive.pointerId!==ev.pointerId)return;ev.preventDefault();pageInkActive.points.push(pagePoint(ev));redrawPageInk()}
+function endPageInk(ev){if(!pageInkActive||pageInkActive.pointerId!==ev.pointerId)return;pageInkActive.points.push(pagePoint(ev));pageInkActive=null;redrawPageInk()}
+function redrawPageInk(){
+ const c=$('#pageInkCanvas');if(!c||!pageInkCtx)return;const r=c.getBoundingClientRect();pageInkCtx.clearRect(0,0,r.width,r.height);pageInkCtx.strokeStyle='#26251f';pageInkCtx.lineCap='round';pageInkCtx.lineJoin='round';
+ pageInkStrokes.forEach(st=>{if(!st.points?.length)return;pageInkCtx.beginPath();st.points.forEach((pt,i)=>{const x=pt.x*r.width,y=pt.y*r.height;if(i===0)pageInkCtx.moveTo(x,y);else pageInkCtx.lineTo(x,y)});const avg=st.points.reduce((a,p)=>a+(p.p||.5),0)/st.points.length;pageInkCtx.lineWidth=1.25+avg*2.5;pageInkCtx.stroke()});
+}
+function undoPageInk(){pageInkStrokes.pop();redrawPageInk()}
+function clearPageInk(){if(confirm('Clear all annotations on this page?')){pageInkStrokes=[];redrawPageInk()}}
+async function savePageInk(showMsg=true){
+ setPageAnno(annotationPage,pageInkStrokes);
+ if(showMsg&&$('#annoSaveState'))$('#annoSaveState').textContent='Saved locally.';
+ if(cloudUser){
+   const a=anchorForPage(annotationPage);
+   const {error}=await cloud.from('pfg_page_annotations').upsert({user_id:cloudUser.id,profile:edition,page_number:annotationPage,content_anchor:a?.id||null,strokes:pageInkStrokes,updated_at:new Date().toISOString()},{onConflict:'user_id,profile,page_number'});
+   if($('#annoSaveState'))$('#annoSaveState').textContent=error?('Local save complete; cloud pending: '+error.message):'Saved locally and to cloud.';
+ }
+}
+async function pullPageAnnotations(){
+ if(!cloudUser)return;
+ const {data,error}=await cloud.from('pfg_page_annotations').select('*').eq('profile',edition);
+ if(error)return;
+ (data||[]).forEach(row=>{
+   const target=(row.content_anchor&&anchorById(row.content_anchor))?anchorPage(row.content_anchor):row.page_number;
+   setPageAnno(target,row.strokes||[]);
+ });
+}
+
+
+
+let activeSession={id:null,title:'',date:'',specimenIds:[],observations:{},comparison:'',ink:[]};
+let sessionInkCtx=null,sessionInkActive=null;
+
+function sessionKey(){return`pfg:sessions:${edition}`}
+function getSessions(){try{return JSON.parse(localStorage.getItem(sessionKey()))||[]}catch(e){return[]}}
+function setSessions(rows){localStorage.setItem(sessionKey(),JSON.stringify(rows))}
+function resetActiveSession(){
+ activeSession={id:crypto.randomUUID?crypto.randomUUID():Date.now().toString(36),title:'',date:new Date().toISOString().slice(0,10),specimenIds:[],observations:{},comparison:'',ink:[]};
+}
+function toggleSessionSpecimen(id){
+ const i=activeSession.specimenIds.indexOf(id);
+ if(i>=0) activeSession.specimenIds.splice(i,1); else activeSession.specimenIds.push(id);
+ showFieldSession();
+}
+function sessionObs(id,stage,val){
+ activeSession.observations[id]=activeSession.observations[id]||{};
+ activeSession.observations[id][stage]=val;
+}
+function renderSessionCards(){
+ return activeSession.specimenIds.map(id=>{
+   const s=specimens.find(x=>x.id===id); const o=activeSession.observations[id]||{};
+   return `<div class="sessioncard"><div class="eyebrow">${s?.encounter||'Field test'}</div><h3>${escapeHtml(s?.name||id)}</h3>
+   <div class="timedrow"><label>Opening / 0 min</label><textarea oninput="sessionObs('${id}','opening',this.value)">${escapeHtml(o.opening||'')}</textarea></div>
+   <div class="timedrow"><label>15 minutes</label><textarea oninput="sessionObs('${id}','min15',this.value)">${escapeHtml(o.min15||'')}</textarea></div>
+   <div class="timedrow"><label>1 hour</label><textarea oninput="sessionObs('${id}','hour1',this.value)">${escapeHtml(o.hour1||'')}</textarea></div>
+   <div class="timedrow"><label>Later / drydown</label><textarea oninput="sessionObs('${id}','later',this.value)">${escapeHtml(o.later||'')}</textarea></div>
+   <div class="timedrow"><label>Decision</label><textarea oninput="sessionObs('${id}','decision',this.value)">${escapeHtml(o.decision||'')}</textarea></div>
+   </div>`;
+ }).join('');
+}
+function showFieldSession(){
+ current='field-session';renderNav($('#search').value);
+ if(!activeSession.id) resetActiveSession();
+ const picks=specimens.map(s=>`<button class="pickitem ${activeSession.specimenIds.includes(s.id)?'active':''}" onclick="toggleSessionSpecimen('${s.id}')"><b>${escapeHtml(s.name)}</b><br><span style="font-size:10px">${escapeHtml(s.family||'')}</span></button>`).join('');
+ const history=getSessions().slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(sess=>`<div class="reccard"><div class="house">${sess.date||''}</div><h3>${escapeHtml(sess.title||'Field Session')}</h3><div class="recmeta">${(sess.specimenIds||[]).map(id=>escapeHtml(specimens.find(s=>s.id===id)?.name||id)).join(' · ')}</div><div class="recactions"><button onclick="loadSession('${sess.id}')">Open</button></div></div>`).join('');
+ $('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">${edition==='personal'?'Personal':'Will'} edition · Active field work</div><h1>Field Session</h1><p class="lede">Smell first. Decide later.</p>
+ <div class="sessionform"><input id="sessionTitle" value="${escapeHtml(activeSession.title||'')}" placeholder="Session title (optional)" oninput="activeSession.title=this.value"><input id="sessionDate" type="date" value="${activeSession.date||new Date().toISOString().slice(0,10)}" oninput="activeSession.date=this.value"><div class="eyebrow">Choose specimens</div><div class="sessionpick">${picks}</div></div>
+ <div class="sessiongrid">${renderSessionCards()||'<div class="emptyrec">Choose one or more specimens to begin.</div>'}</div>
+ <div class="comparebox"><div class="eyebrow">Across the session</div><textarea id="sessionCompare" placeholder="Which changed most? Which surprised you? What did one reveal about another?" oninput="activeSession.comparison=this.value">${escapeHtml(activeSession.comparison||'')}</textarea>
+ <div class="sessionink"><div class="fieldlabel"><span>Handwritten session page</span><span>Apple Pencil / pen</span></div><div class="sessiontoolbar"><button onclick="undoSessionInk()">Undo stroke</button><button onclick="clearSessionInk()">Clear page</button></div><canvas id="sessionInkCanvas"></canvas></div>
+ </div>
+ <button class="save" onclick="saveFieldSession()">Save field session</button>
+ <div class="sessionhistory"><div class="eyebrow">Previous sessions</div>${history||'<div class="emptyrec">No sessions saved yet.</div>'}</div>
+ <span class="folio">FIELD SESSION</span></article></div>`;
+ $('#noteTitle').textContent='Field Session';$('#xref').innerHTML='A saved session also writes dated observations back into each selected specimen’s field history.';
+ requestAnimationFrame(initSessionInk);
+}
+function initSessionInk(){
+ const c=$('#sessionInkCanvas');if(!c)return;const r=c.getBoundingClientRect(),dpr=Math.max(1,devicePixelRatio||1);
+ c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);sessionInkCtx=c.getContext('2d');sessionInkCtx.setTransform(dpr,0,0,dpr,0,0);redrawSessionInk();
+ c.onpointerdown=e=>{if(e.pointerType==='touch')return;e.preventDefault();c.setPointerCapture?.(e.pointerId);sessionInkActive={pointerId:e.pointerId,points:[sessionPoint(e)]};activeSession.ink.push(sessionInkActive);redrawSessionInk()};
+ c.onpointermove=e=>{if(!sessionInkActive||sessionInkActive.pointerId!==e.pointerId)return;e.preventDefault();sessionInkActive.points.push(sessionPoint(e));redrawSessionInk()};
+ c.onpointerup=e=>{if(!sessionInkActive||sessionInkActive.pointerId!==e.pointerId)return;sessionInkActive.points.push(sessionPoint(e));sessionInkActive=null;redrawSessionInk()};
+ c.onpointercancel=c.onpointerup;
+}
+function sessionPoint(ev){const c=$('#sessionInkCanvas'),r=c.getBoundingClientRect();return{x:(ev.clientX-r.left)/r.width,y:(ev.clientY-r.top)/r.height,p:ev.pressure||.5}}
+function redrawSessionInk(){const c=$('#sessionInkCanvas');if(!c||!sessionInkCtx)return;const r=c.getBoundingClientRect();sessionInkCtx.clearRect(0,0,r.width,r.height);sessionInkCtx.strokeStyle='#26251f';sessionInkCtx.lineCap='round';sessionInkCtx.lineJoin='round';(activeSession.ink||[]).forEach(st=>{if(!st.points?.length)return;sessionInkCtx.beginPath();st.points.forEach((pt,i)=>{const x=pt.x*r.width,y=pt.y*r.height;if(i===0)sessionInkCtx.moveTo(x,y);else sessionInkCtx.lineTo(x,y)});const avg=st.points.reduce((a,p)=>a+(p.p||.5),0)/st.points.length;sessionInkCtx.lineWidth=1.25+avg*2.5;sessionInkCtx.stroke()})}
+function undoSessionInk(){activeSession.ink.pop();redrawSessionInk()}
+function clearSessionInk(){if(confirm('Clear the handwritten session page?')){activeSession.ink=[];redrawSessionInk()}}
+function loadSession(id){const s=getSessions().find(x=>x.id===id);if(!s)return;activeSession=JSON.parse(JSON.stringify(s));showFieldSession()}
+async function saveFieldSession(){
+ if(!activeSession.specimenIds.length)return;
+ activeSession.title=$('#sessionTitle')?.value||activeSession.title||'';
+ activeSession.date=$('#sessionDate')?.value||activeSession.date||new Date().toISOString().slice(0,10);
+ activeSession.comparison=$('#sessionCompare')?.value||activeSession.comparison||'';
+ const rows=getSessions();const i=rows.findIndex(x=>x.id===activeSession.id);
+ const copy=JSON.parse(JSON.stringify(activeSession)); if(i>=0)rows[i]=copy;else rows.push(copy);setSessions(rows);
+ // Write a dated specimen field-record summary for each selected fragrance.
+ for(const id of activeSession.specimenIds){
+   const d=getData(id),o=activeSession.observations[id]||{};
+   const text=[o.opening&&`Opening: ${o.opening}`,o.min15&&`15 min: ${o.min15}`,o.hour1&&`1 hour: ${o.hour1}`,o.later&&`Later: ${o.later}`,o.decision&&`Decision: ${o.decision}`,activeSession.comparison&&`Session comparison: ${activeSession.comparison}`].filter(Boolean).join('\n\n');
+   const existing=d.entries.find(e=>e.sessionId===activeSession.id);
+   const entry=normalizeEntry(existing||{id:crypto.randomUUID(),date:activeSession.date,text:'',fields:{},ink:[]});
+   entry.date=activeSession.date;entry.text=text;entry.sessionId=activeSession.id;
+   if(!existing)d.entries.push(entry);
+   setData(id,d);
+ }
+ if(cloudUser){
+   await pushFieldSession(copy).catch(()=>{});
+   await pushCloud().catch(()=>{});
+ }
+ resetActiveSession();showFieldSession();
+}
+async function pushFieldSession(sess){
+ if(!cloudUser)return;
+ const {error}=await cloud.from('pfg_field_sessions').upsert({user_id:cloudUser.id,profile:edition,session_id:sess.id,title:sess.title||'',session_date:sess.date||new Date().toISOString().slice(0,10),specimen_ids:sess.specimenIds||[],observations:sess.observations||{},comparison_note:sess.comparison||'',ink:sess.ink||[],updated_at:new Date().toISOString()},{onConflict:'user_id,profile,session_id'});
+ if(error)throw error;
+}
+async function pullFieldSessions(){
+ if(!cloudUser)return;
+ const {data,error}=await cloud.from('pfg_field_sessions').select('*').eq('profile',edition);if(error)return;
+ const rows=(data||[]).map(r=>({id:r.session_id,title:r.title,date:r.session_date,specimenIds:r.specimen_ids||[],observations:r.observations||{},comparison:r.comparison_note||'',ink:r.ink||[]}));
+ setSessions(rows);
+}
+
+const recStateLabels={
+ recommended:'Recommended',
+ want_to_smell:'Want to smell',
+ sampled:'Sampled',
+ owned:'Owned',
+ finished:'Finished',
+ archived:'Archived'
+};
+function recKey(){return`pfg:recommendations:${edition}`}
+function getRecommendations(){try{return JSON.parse(localStorage.getItem(recKey()))||[]}catch(e){return[]}}
+function setRecommendations(rows){localStorage.setItem(recKey(),JSON.stringify(rows))}
+function newRecId(){return crypto.randomUUID?crypto.randomUUID():(Date.now().toString(36)+Math.random().toString(36).slice(2))}
+function addRecommendation(){
+ const name=$('#recName').value.trim(),house=$('#recHouse').value.trim(),reason=$('#recReason').value.trim();
+ if(!name){$('#recMsg').textContent='Fragrance name is required.';return}
+ const rows=getRecommendations();
+ rows.unshift({id:newRecId(),fragrance_name:name,house,reason,source_type:'reader',linked_specimen_id:null,state:'recommended',created_at:new Date().toISOString(),updated_at:new Date().toISOString()});
+ setRecommendations(rows); if(cloudUser)pushRecommendations().catch(()=>{});
+ showRecommendations();
+}
+function updateRecState(id,state){
+ const rows=getRecommendations();const r=rows.find(x=>x.id===id);if(!r)return;r.state=state;r.updated_at=new Date().toISOString();setRecommendations(rows);
+ if(r.linked_specimen_id && ['want_to_smell','sampled','owned','finished'].includes(state)){
+   const d=getData(r.linked_specimen_id);d.collectionStatus=state;d.owned=(state==='owned');setData(r.linked_specimen_id,d);
+ }
+ if(cloudUser)pushRecommendations().catch(()=>{});
+ showRecommendations();
+}
+function linkRecommendationToSpecimen(id,specimenId){
+ const rows=getRecommendations(),r=rows.find(x=>x.id===id);if(!r)return;r.linked_specimen_id=specimenId;r.updated_at=new Date().toISOString();setRecommendations(rows);
+ if(cloudUser)pushRecommendations().catch(()=>{});showRecommendations();
+}
+function archiveRecommendation(id){updateRecState(id,'archived')}
+function recMatchSpecimen(r){
+ const norm=s=>(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+ return specimens.find(s=>norm(s.name)===norm(r.fragrance_name))||null;
+}
+async function pushRecommendations(){
+ if(!cloudUser)return;
+ const rows=getRecommendations().map(r=>({user_id:cloudUser.id,profile:edition,recommendation_id:r.id,fragrance_name:r.fragrance_name,house:r.house||'',reason:r.reason||'',source_type:r.source_type||'reader',linked_specimen_id:r.linked_specimen_id||null,state:r.state||'recommended',created_at:r.created_at||new Date().toISOString(),updated_at:r.updated_at||new Date().toISOString()}));
+ if(!rows.length)return;
+ const {error}=await cloud.from('pfg_recommendations').upsert(rows,{onConflict:'user_id,profile,recommendation_id'});if(error)throw error;
+}
+async function pullRecommendations(){
+ if(!cloudUser)return;
+ const {data,error}=await cloud.from('pfg_recommendations').select('*').eq('profile',edition);if(error)return;
+ const rows=(data||[]).map(r=>({id:r.recommendation_id,fragrance_name:r.fragrance_name,house:r.house,reason:r.reason,source_type:r.source_type,linked_specimen_id:r.linked_specimen_id,state:r.state,created_at:r.created_at,updated_at:r.updated_at}));
+ setRecommendations(rows);
+}
+function showRecommendations(){
+ current='recommendations';renderNav($('#search').value);
+ const rows=getRecommendations().filter(r=>r.state!=='archived');
+ const cards=rows.map(r=>{
+   const match=r.linked_specimen_id?specimens.find(s=>s.id===r.linked_specimen_id):recMatchSpecimen(r);
+   const linked=match?match.id:null;
+   const states=['recommended','want_to_smell','sampled','owned','finished'].map(st=>`<button class="${r.state===st?'active':''}" onclick="updateRecState('${r.id}','${st}')">${recStateLabels[st]}</button>`).join('');
+   const reason=r.reason?`<p>${escapeHtml(r.reason)}</p>`:'';
+   const linkAction=linked?`<button onclick="showSpecimen('${linked}')">Open specimen</button>`:(match?`<button onclick="linkRecommendationToSpecimen('${r.id}','${match.id}')">Link to specimen</button>`:'');
+   return `<div class="reccard"><div class="house">${escapeHtml(r.house||'')}</div><h3>${escapeHtml(r.fragrance_name)}</h3>${reason}<div class="recmeta">${r.source_type==='reader'?'Added in this edition':'Book-linked recommendation'}</div><div class="recstate">${states}</div><div class="recactions">${linkAction}<button onclick="archiveRecommendation('${r.id}')">Archive</button></div></div>`;
+ }).join('');
+ $('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">${edition==='personal'?'Personal':'Will'} edition · Discovery</div><h1>Recommendations</h1><p class="lede">Questions waiting to become encounters.</p><div class="recommendationflow">Recommended → Want to smell → Sampled → Owned / Finished</div><div class="recform"><div class="eyebrow">Add a recommendation</div><input id="recName" placeholder="Fragrance name"><input id="recHouse" placeholder="House (optional)"><textarea id="recReason" placeholder="Why is this worth smelling?"></textarea><button class="save" onclick="addRecommendation()">Add recommendation</button><div id="recMsg" class="inkhint"></div></div><div class="recgrid">${cards||'<div class="emptyrec">No recommendations yet. Nothing has been invented or pre-filled.</div>'}</div><span class="folio">DISCOVERY</span></article></div>`;
+ $('#noteTitle').textContent='Recommendations';$('#xref').innerHTML='Personal and Will recommendation queues are intentionally separate.';
+}
+
+const collectionLabels={
+  unmarked:'Unmarked',
+  want_to_smell:'Want to smell',
+  sampled:'Sampled',
+  owned:'Owned',
+  finished:'Finished'
+};
+let registerFilter='all';
+let annotationPage=1;
+let pageInkStrokes=[];
+let pageInkActive=null;
+let pageInkCtx=null;
+let pdfDoc=null;
+let pdfZoom=1.15;
+let pdfLoadPromise=null;
+
+function setCollectionStatus(status){
+  if(!current || current==='register') return;
+  let d=getData(current);
+  d.collectionStatus=status;
+  d.owned=(status==='owned');
+  setData(current,d);
+  if(cloudUser) pushCloud().catch(e=>msgSync('Cloud save pending: '+e.message));
+  showSpecimen(current);
+}
+function countByStatus(){
+  const counts={unmarked:0,want_to_smell:0,sampled:0,owned:0,finished:0};
+  specimens.forEach(s=>{const d=getData(s.id);counts[d.collectionStatus||'unmarked']=(counts[d.collectionStatus||'unmarked']||0)+1});
+  return counts;
+}
+function setRegisterFilter(filter){registerFilter=filter;showRegister()}
+
+function showSpecimen(id){current=id;currentEntryId='current';let s=specimens.find(x=>x.id===id);renderNav($('#search').value);let d=getData(s.id);
+ const mats=s.materials.length?s.materials.join(' · '):'Open field — no approved material list supplied.';
+ const assocs=s.associations.length?s.associations.join('<br>'):'Open field.';
+ const proofLink=s.proof?`<a href="assets/current-proof-v2.pdf#page=${s.proof}" target="_blank">Read in current proof · p.${s.proof}</a>`:'<span>Current proof location not asserted here.</span>';
+ const right=s.plate
+   ? `<img class="plate" src="${s.plate}" alt="${s.name} approved plate"/>`
+   : `<div class="blankplate"><div class="inner"><div class="eyebrow">Specimen record</div><h2>${s.name}</h2><p>No separate approved production plate is being substituted here. The digital edition keeps this space textual until an approved source exists.</p></div></div>`;
+ const anchors=(s.anchors||[]).map(id=>anchorById(id)).filter(Boolean);
+ const anchorHtml=anchors.length?anchors.map(a=>`<div class="anchorcard"><h4>${a.label}</h4><p>Stable content anchor · current proof p.${a.page}</p><div class="anchorlinks"><button onclick="showAnchor('${a.id}')">Open anchored page</button></div></div>`).join(''):'<p class="bodycopy">No stable cross-reference assigned.</p>';
+ const lifecycle=['want_to_smell','sampled','owned','finished'].map(st=>`<button class="${d.collectionStatus===st?'active':''}" onclick="setCollectionStatus('${st}')">${collectionLabels[st]}</button>`).join('');
+ $('#content').innerHTML=`<div class="book"><article class="page left"><div class="eyebrow">${s.chapter} · ${s.role}</div><h1>${s.name}</h1>${s.house?`<p class="lede">${s.house}</p>`:''}
+ <div class="specimenfacts">
+   <div class="factbox"><h3>Encounter</h3><p>${s.encounter}</p></div>
+   <div class="factbox"><h3>Family</h3><p>${s.family}</p></div>
+   <div class="factbox"><h3>The Pieces</h3><p class="materials">${mats}</p></div>
+   <div class="factbox"><h3>Association</h3><p>${assocs}</p></div>
+ </div>
+ <div class="callout"><b>Field note</b><br>${s.fieldNote}</div>
+ <div class="eyebrow" style="margin-top:18px">Cross-references</div>
+ ${anchorHtml}
+ <div class="eyebrow" style="margin-top:18px">Collection / discovery state</div>
+ <div class="lifecycle">${lifecycle}</div>
+ <div class="lifecyclehint">${d.collectionStatus==='unmarked'?'No state has been assigned yet.':`Current state: ${collectionLabels[d.collectionStatus]}.`} The printed book still uses only the simple owned-bottle mark.</div>
+ <div class="ownedbadge">${d.owned?'■ Bottle in collection':'□ Bottle not marked in collection'}</div>
+ <div class="xref">${proofLink}<button onclick="focusNote()">Open field record</button></div>
+ <span class="folio">SPECIMEN</span></article><article class="page right">${right}<span class="folio">FIELD GUIDE</span></article></div>`;
+ loadInspector();
+}
+
+function showCrossRefs(){
+  current='crossrefs';renderNav($('#search').value);
+  const cards=contentAnchors.map(a=>{
+    const linked=specimens.filter(s=>(s.anchors||[]).includes(a.id)).map(s=>s.name);
+    return `<div class="anchorcard"><h4>${a.label}</h4><p>${a.type} · stable id: ${a.id} · current proof p.${a.page}</p><div class="xrefgrid"><div class="xrefitem"><b>Linked specimens</b><span>${linked.length?linked.join(' · '):'None assigned'}</span></div><div class="xrefitem"><b>Purpose</b><span>Annotations and links follow this content anchor even when pagination changes.</span></div></div><div class="anchorlinks"><button onclick="showAnchor('${a.id}')">Open page</button></div></div>`;
+  }).join('');
+  $('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">Navigation architecture</div><h1>Cross-reference map</h1><p class="lede">Stable content anchors beneath temporary pagination.</p><p class="bodycopy">Page numbers can change. These identifiers are meant to survive reflow so field notes, specimen links, and handwritten annotations remain attached to the same part of the book.</p>${cards}<span class="folio">ANCHORS</span></article></div>`;
+  $('#noteTitle').textContent='Cross-reference map';$('#xref').innerHTML='Open an anchor to move directly to that book location.';
+}
+
+function showRegister(){current='register';renderNav($('#search').value);
+ const counts=countByStatus();
+ const filterButtons=[['all','All'],['want_to_smell','Want to smell'],['sampled','Sampled'],['owned','Owned'],['finished','Finished'],['unmarked','Unmarked']]
+   .map(([k,label])=>`<button class="${registerFilter===k?'active':''}" onclick="setRegisterFilter('${k}')">${label}</button>`).join('');
+ const visible=specimens.filter(s=>registerFilter==='all'||getData(s.id).collectionStatus===registerFilter);
+ const cards=visible.map(s=>{let d=getData(s.id);let last=d.entries[d.entries.length-1];return `<button class="regcard" onclick="showSpecimen('${s.id}')"><div class="eyebrow">${s.encounter}</div><div class="regname">${s.name}</div><div class="regmeta">${s.house?escapeHtml(s.house)+'<br>':''}${s.family}</div><div class="statusrow"><span class="statuspill">${collectionLabels[d.collectionStatus||'unmarked']}</span><span class="statuspill">${d.entries.length} field record${d.entries.length===1?'':'s'}</span>${last?.date?`<span class="statuspill">Last ${last.date}</span>`:''}</div></button>`}).join('');
+ $('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">${edition==='personal'?'Personal':'Will'} edition · Back matter</div><h1>The Specimen Register</h1><p class="lede">Observations in evolution.</p><p class="bodycopy">The narrative ends. The field work continues. A fragrance is not a verdict. It is an encounter. The register remains open.</p>
+ <div class="summarygrid">
+   <div class="summarycell"><b>${specimens.length}</b><span>All</span></div>
+   <div class="summarycell"><b>${counts.want_to_smell}</b><span>Want to smell</span></div>
+   <div class="summarycell"><b>${counts.sampled}</b><span>Sampled</span></div>
+   <div class="summarycell"><b>${counts.owned}</b><span>Owned</span></div>
+   <div class="summarycell"><b>${counts.finished}</b><span>Finished</span></div>
+ </div>
+ <div class="collectionbar">${filterButtons}</div>
+ <div class="registergrid">${cards||'<p class="bodycopy">No specimens in this state yet.</p>'}</div><span class="folio">REGISTER</span></article></div>`;
+ $('#noteTitle').textContent='Specimen Register';$('#xref').innerHTML='Choose a specimen to open its field record.';
+}
+function showProof(){current='proof';renderNav($('#search').value);$('#content').innerHTML=`<div class="book" style="display:block"><iframe class="proof" src="assets/current-proof-v2.pdf"></iframe></div>`;$('#noteTitle').textContent='Current proof';$('#xref').innerHTML='';}
+function showJournal(){current='journal';renderNav($('#search').value);let rows=[];for(const s of specimens){let d=getData(s.id);d.entries.forEach(e=>rows.push({s,e}));}
+ rows.sort((a,b)=>(b.e.date||'').localeCompare(a.e.date||''));$('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">${edition==='personal'?'Personal':'Will'} edition</div><h1>Field Records</h1><p class="lede">A searchable history of observations attached to specimens.</p>${rows.length?rows.map(({s,e})=>`<div class="noteitem"><button onclick="openEntry('${s.id}','${e.id}')"><strong>${s.name}</strong><time>${e.date}</time><div>${escapeHtml((e.text||e.fields?.firstImpression||e.fields?.remindsMe||'[handwritten entry]')).slice(0,240)}${(e.text||'').length>240?'…':''}</div></button></div>`).join(''):'<p class="bodycopy">No field records yet.</p>'}</article></div>`;}
+function showAbout(){current='about';renderNav($('#search').value);$('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">Working prototype</div><h1>A book with memory</h1><p class="lede">The reading object stays visually book-like, while specimens and field records become addressable data.</p><p class="bodycopy">This build adds Field Sessions: select one or more source-supported specimens, record opening / 15-minute / 1-hour / later observations, compare them side by side, add a handwritten Apple Pencil session page, and save the result back into each fragrance’s dated field history. Records currently live only in this browser. A production build can replace local storage with authenticated cloud sync without changing the book model.</p><div class="callout"><b>Not yet canonical:</b> This prototype is an interaction proof, not a final publication layout. Missing plates, recommendation sets, and unresolved source material remain unresolved.</div></article></div>`;}
+function selectedEntry(d){
+  if(currentEntryId==='current') return d.entries[d.entries.length-1];
+  if(currentEntryId==='new') return null;
+  return d.entries.find(x=>x.id===currentEntryId);
+}
+function loadInspector(){
+  let s=specimens.find(x=>x.id===current); if(!s)return;
+  let d=getData(s.id); $('#noteTitle').textContent=s.name; $('#owned').checked=!!d.owned;
+  let e=selectedEntry(d);
+  $('#note').value=e?.text||'';
+  $('#noteDate').textContent=e?.date||'';
+  $('#firstImpression').value=e?.fields?.firstImpression||'';
+  $('#remindsMe').value=e?.fields?.remindsMe||'';
+  $('#afterHour').value=e?.fields?.afterHour||'';
+  $('#wearAgain').value=e?.fields?.wearAgain||'';
+  inkStrokes=JSON.parse(JSON.stringify(e?.ink||[]));
+  $('#xref').innerHTML=s.proof?`<a href="assets/current-proof-v2.pdf#page=${s.proof}" target="_blank">Proof p.${s.proof}</a>`:'No exact current-proof page asserted for this specimen.';
+  requestAnimationFrame(resizeInkCanvas);
+}
+function ensureEntry(d){
+  let e=selectedEntry(d);
+  if(!e){
+    e=normalizeEntry({id:crypto.randomUUID?crypto.randomUUID():Date.now().toString(36),date:new Date().toISOString().slice(0,10)});
+    d.entries.push(e); currentEntryId=e.id;
+  }
+  return e;
+}
+function saveCurrent(){
+  let s=specimens.find(x=>x.id===current); if(!s)return;
+  let d=getData(s.id); d.owned=$('#owned').checked; if(d.owned)d.collectionStatus='owned'; else if(d.collectionStatus==='owned')d.collectionStatus='unmarked';
+  let hasContent = $('#note').value.trim() || $('#firstImpression').value.trim() || $('#remindsMe').value.trim() || $('#afterHour').value.trim() || $('#wearAgain').value.trim() || inkStrokes.length;
+  if(hasContent){
+    let e=ensureEntry(d);
+    e.text=$('#note').value;
+    e.fields={
+      firstImpression:$('#firstImpression').value,
+      remindsMe:$('#remindsMe').value,
+      afterHour:$('#afterHour').value,
+      wearAgain:$('#wearAgain').value
+    };
+    e.ink=JSON.parse(JSON.stringify(inkStrokes));
+    e.date=e.date||new Date().toISOString().slice(0,10);
+  }
+  setData(s.id,d);
+  $('#saveStatus').textContent='Saved locally for '+(edition==='personal'?'Personal':'Will')+'.';
+  setTimeout(()=>$('#saveStatus').textContent='',1800);
+  renderNav($('#search').value); loadInspector(); if(cloudUser)pushCloud().catch(e=>msgSync('Cloud save pending: '+e.message));
+}
+function newEntry(){
+  currentEntryId='new';
+  $('#note').value=''; $('#noteDate').textContent=new Date().toISOString().slice(0,10);
+  ['firstImpression','remindsMe','afterHour','wearAgain'].forEach(id=>$('#'+id).value='');
+  inkStrokes=[]; redrawInk(); $('#note').focus();
+}
+function openEntry(id,eid){current=id;currentEntryId=eid;showSpecimen(id);currentEntryId=eid;loadInspector();focusNote();}
+function focusNote(){let p=$('#inspector');p.classList.add('open');$('#note').focus();}
+
+function msgSync(s){if($('#syncMsg'))$('#syncMsg').textContent=s||''}
+function updateSyncUI(){
+ const on=!!cloudUser;
+ $('#syncState').textContent=on?'Signed in':'Local only';
+ $('#syncNowBtn').disabled=!on;
+ $('#signOutBtn').style.display=on?'block':'none';
+ $('#signInBtn').style.display=on?'none':'block';
+ $('#syncEmail').style.display=on?'none':'block';
+}
+async function initCloud(){
+ if(!cloud){msgSync('Cloud library unavailable; local records still work.');return}
+ const {data:{session}}=await cloud.auth.getSession(); cloudUser=session?.user||null;updateSyncUI();
+ cloud.auth.onAuthStateChange(async(_ev,session)=>{cloudUser=session?.user||null;updateSyncUI();if(cloudUser){await syncAll();await pullPageAnnotations();await pullRecommendations();await pullFieldSessions();}});
+}
+async function sendMagicLink(){
+ const email=$('#syncEmail').value.trim(); if(!email){msgSync('Enter an email address.');return}
+ msgSync('Sending secure sign-in link…');
+ const {error}=await cloud.auth.signInWithOtp({email,options:{emailRedirectTo:location.href.split('#')[0]}});
+ msgSync(error?'Sign-in error: '+error.message:'Check your email for the sign-in link.');
+}
+async function signOutCloud(){await cloud.auth.signOut();cloudUser=null;updateSyncUI();msgSync('Signed out. Local records remain on this device.')}
+function uuidify(e,d,sid){
+ if(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(e.id||''))return e.id;
+ e.id=crypto.randomUUID();setData(sid,d);return e.id;
+}
+async function pullCloud(){
+ const {data:states,error:se}=await cloud.from('pfg_specimen_state').select('*');if(se)throw se;
+ const {data:entries,error:ee}=await cloud.from('pfg_field_entries').select('*');if(ee)throw ee;
+ const old=edition;
+ for(const profile of ['personal','will']){edition=profile;
+  for(const s of specimens){
+   const d=getData(s.id), st=(states||[]).find(x=>x.profile===profile&&x.specimen_id===s.id); if(st){d.owned=!!st.owned;d.collectionStatus=st.collection_status||((st.owned)?'owned':'unmarked');}
+   const map=new Map((d.entries||[]).map(e=>[e.id,normalizeEntry(e)]));
+   (entries||[]).filter(x=>x.profile===profile&&x.specimen_id===s.id).forEach(x=>map.set(x.entry_id,normalizeEntry({id:x.entry_id,date:x.entry_date,text:x.note_text,fields:x.fields,ink:x.ink})));
+   d.entries=[...map.values()].sort((a,b)=>(a.date||'').localeCompare(b.date||''));setData(s.id,d);
+  }
+ } edition=old;
+}
+async function pushCloud(){
+ const old=edition,states=[],entries=[];
+ for(const profile of ['personal','will']){edition=profile;
+  for(const s of specimens){const d=getData(s.id);
+   states.push({user_id:cloudUser.id,profile,specimen_id:s.id,owned:!!d.owned,collection_status:d.collectionStatus||'unmarked',updated_at:new Date().toISOString()});
+   for(const e0 of d.entries||[]){const e=normalizeEntry(e0),eid=uuidify(e,d,s.id);
+    entries.push({user_id:cloudUser.id,profile,specimen_id:s.id,entry_id:eid,entry_date:e.date||new Date().toISOString().slice(0,10),note_text:e.text||'',fields:e.fields||{},ink:e.ink||[],updated_at:new Date().toISOString()});
+   }
+  }
+ } edition=old;
+ let r=await cloud.from('pfg_specimen_state').upsert(states,{onConflict:'user_id,profile,specimen_id'});if(r.error)throw r.error;
+ if(entries.length){r=await cloud.from('pfg_field_entries').upsert(entries,{onConflict:'user_id,profile,specimen_id,entry_id'});if(r.error)throw r.error;}
+}
+async function syncAll(){
+ if(!cloudUser){msgSync('Sign in first.');return}
+ try{msgSync('Syncing…');await pullCloud();await pushCloud();await pullPageAnnotations();await pullRecommendations();await pushRecommendations();await pullFieldSessions();renderNav($('#search').value);loadInspector();msgSync('Synced across signed-in devices.')}
+ catch(e){console.error(e);msgSync('Sync not ready yet: '+(e.message||e))}
+}
+
+function setNoteMode(mode){
+  noteMode=mode;
+  $('#typeMode').classList.toggle('active',mode==='type');
+  $('#inkMode').classList.toggle('active',mode==='ink');
+  $('#typeWrap').classList.toggle('hidden',mode!=='type');
+  $('#inkWrap').classList.toggle('active',mode==='ink');
+  if(mode==='ink') requestAnimationFrame(resizeInkCanvas);
+}
+function resizeInkCanvas(){
+  const c=$('#inkCanvas'); if(!c)return;
+  const rect=c.getBoundingClientRect(); if(!rect.width)return;
+  const dpr=Math.max(1,window.devicePixelRatio||1);
+  const w=Math.round(rect.width*dpr), h=Math.round(rect.height*dpr);
+  if(c.width!==w||c.height!==h){c.width=w;c.height=h; inkCtx=c.getContext('2d'); inkCtx.setTransform(dpr,0,0,dpr,0,0);}
+  else if(!inkCtx){inkCtx=c.getContext('2d');inkCtx.setTransform(dpr,0,0,dpr,0,0);}
+  redrawInk();
+}
+function redrawInk(){
+  const c=$('#inkCanvas'); if(!c||!inkCtx)return;
+  const rect=c.getBoundingClientRect();
+  inkCtx.clearRect(0,0,rect.width,rect.height);
+  inkCtx.lineCap='round'; inkCtx.lineJoin='round'; inkCtx.strokeStyle='#26251f';
+  inkStrokes.forEach(stroke=>{
+    if(!stroke.points?.length)return;
+    inkCtx.beginPath();
+    stroke.points.forEach((p,i)=>{
+      const x=p.x*rect.width, y=p.y*rect.height;
+      if(i===0) inkCtx.moveTo(x,y); else inkCtx.lineTo(x,y);
+    });
+    const avg=stroke.points.reduce((a,p)=>a+(p.p||.5),0)/stroke.points.length;
+    inkCtx.lineWidth=1.3 + avg*2.5;
+    inkCtx.stroke();
+  });
+}
+function canvasPoint(ev){
+  const c=$('#inkCanvas'), r=c.getBoundingClientRect();
+  return {x:(ev.clientX-r.left)/r.width,y:(ev.clientY-r.top)/r.height,p:ev.pressure||.5};
+}
+function beginInk(ev){
+  if(ev.pointerType==='touch' && !$('#fingerInk').checked)return;
+  ev.preventDefault();
+  $('#inkCanvas').setPointerCapture?.(ev.pointerId);
+  activeStroke={pointerId:ev.pointerId,points:[canvasPoint(ev)]};
+  inkStrokes.push(activeStroke); redrawInk();
+}
+function moveInk(ev){
+  if(!activeStroke||activeStroke.pointerId!==ev.pointerId)return;
+  ev.preventDefault(); activeStroke.points.push(canvasPoint(ev)); redrawInk();
+}
+function endInk(ev){
+  if(!activeStroke||activeStroke.pointerId!==ev.pointerId)return;
+  activeStroke.points.push(canvasPoint(ev)); activeStroke=null; redrawInk();
+}
+function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+$('#switchEdition').onclick=()=>{edition=edition==='personal'?'will':'personal';localStorage.setItem('pfg.edition',edition);updateEditionUI();if(current==='journal')showJournal();else if(specimens.some(s=>s.id===current))showSpecimen(current)};
+$('#saveNote').onclick=saveCurrent;$('#owned').onchange=saveCurrent;$('#newNote').onclick=newEntry;$('#openNotes').onclick=focusNote;$('#search').oninput=e=>renderNav(e.target.value);
+$('#typeMode').onclick=()=>setNoteMode('type');$('#inkMode').onclick=()=>setNoteMode('ink');
+$('#undoInk').onclick=()=>{inkStrokes.pop();redrawInk()};$('#clearInk').onclick=()=>{if(confirm('Clear all handwriting on this entry?')){inkStrokes=[];redrawInk()}};
+$('#inkCanvas').addEventListener('pointerdown',beginInk);$('#inkCanvas').addEventListener('pointermove',moveInk);$('#inkCanvas').addEventListener('pointerup',endInk);$('#inkCanvas').addEventListener('pointercancel',endInk);
+window.addEventListener('resize',()=>{if(noteMode==='ink')resizeInkCanvas();if($('#pdfCanvas'))renderPdfPage(annotationPage)});
+$('#signInBtn').onclick=sendMagicLink;$('#syncNowBtn').onclick=syncAll;$('#signOutBtn').onclick=signOutCloud;
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>({proof:showProof,journal:showJournal,about:showAbout}[b.dataset.view]()));
+$('#exportBtn').onclick=()=>{let payload={version:1,exported:new Date().toISOString(),records:{personal:{},will:{}}};['personal','will'].forEach(ed=>specimens.forEach(s=>{try{payload.records[ed][s.id]=JSON.parse(localStorage.getItem(`pfg.${ed}.${s.id}`))||{owned:false,entries:[]}}catch(e){}}));let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='personal-field-guides-records.json';a.click();URL.revokeObjectURL(a.href)};
+$('#importInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let p=JSON.parse(await f.text());['personal','will'].forEach(ed=>Object.entries(p.records?.[ed]||{}).forEach(([id,d])=>localStorage.setItem(`pfg.${ed}.${id}`,JSON.stringify(d))));updateEditionUI();alert('Field records imported.')}catch(err){alert('Could not import this file.')}};
+window.focusNote=focusNote;window.openEntry=openEntry;
+renderNav();updateEditionUI();showSpecimen(current);
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(console.error);
+  });
+}
+</script>
+
+</body>
+</html>

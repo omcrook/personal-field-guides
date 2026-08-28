@@ -1,0 +1,104 @@
+[
+  {
+    "id": "intro",
+    "label": "Introduction",
+    "current_proof_page": 4,
+    "type": "essay"
+  },
+  {
+    "id": "citrus-aurantium",
+    "label": "Citrus Aurantium",
+    "current_proof_page": 8,
+    "type": "plate"
+  },
+  {
+    "id": "4711-memory",
+    "label": "4711 / Grandpa",
+    "current_proof_page": 11,
+    "type": "memory"
+  },
+  {
+    "id": "resin-spice",
+    "label": "Resin, Spice, Tobacco & Leather",
+    "current_proof_page": 15,
+    "type": "plate"
+  },
+  {
+    "id": "marlborough-essay",
+    "label": "Marlborough",
+    "current_proof_page": 18,
+    "type": "essay"
+  },
+  {
+    "id": "petrichor",
+    "label": "Petrichor",
+    "current_proof_page": 24,
+    "type": "plate"
+  },
+  {
+    "id": "river-stone",
+    "label": "River Stone / The Merced",
+    "current_proof_page": 27,
+    "type": "memory"
+  },
+  {
+    "id": "garage",
+    "label": "The Garage",
+    "current_proof_page": 31,
+    "type": "plate"
+  },
+  {
+    "id": "objects-of-smell",
+    "label": "Objects of Smell",
+    "current_proof_page": 34,
+    "type": "plate"
+  },
+  {
+    "id": "becoming",
+    "label": "Becoming",
+    "current_proof_page": 36,
+    "type": "chapter"
+  },
+  {
+    "id": "best-of-fire",
+    "label": "The Best of Fire / Baccarat Rouge 540",
+    "current_proof_page": 42,
+    "type": "plate"
+  },
+  {
+    "id": "green-water",
+    "label": "Green Water",
+    "current_proof_page": 47,
+    "type": "essay"
+  },
+  {
+    "id": "in-parallel",
+    "label": "In Parallel",
+    "current_proof_page": 52,
+    "type": "chapter"
+  },
+  {
+    "id": "specimen-register",
+    "label": "Specimen Register",
+    "current_proof_page": 58,
+    "type": "register"
+  },
+  {
+    "id": "discovery-register",
+    "label": "Discovery Register",
+    "current_proof_page": 90,
+    "type": "register"
+  },
+  {
+    "id": "field-record",
+    "label": "Field Record",
+    "current_proof_page": 91,
+    "type": "register"
+  },
+  {
+    "id": "undiscovered-specimens",
+    "label": "Undiscovered Specimens",
+    "current_proof_page": 92,
+    "type": "plate"
+  }
+]

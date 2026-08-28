@@ -1,0 +1,25 @@
+{
+  "name": "The Personal Field Guides \u2014 Fragrance",
+  "short_name": "Field Guides",
+  "description": "A personal fragrance field guide, journal, collection register, and shared discovery book.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#efe8d8",
+  "theme_color": "#efe8d8",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

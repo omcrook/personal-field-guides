@@ -81,6 +81,14 @@ textarea{width:100%;min-height:180px;background:#f9f5ec;border:1px solid var(--l
     <div class="eyebrow">Field record</div>
     <h2 id="noteTitle">Select a specimen</h2>
     <div class="owned"><input type="checkbox" id="owned" /><label for="owned">Bottle owned / in collection</label></div>
+    <div class="syncbox">
+      <div class="syncrow"><span>Cloud sync</span><span id="syncState">Local only</span></div>
+      <input id="syncEmail" type="email" autocomplete="email" placeholder="Email for magic link" />
+      <button class="action" id="signInBtn">Send sign-in link</button>
+      <button class="action" id="syncNowBtn" disabled>Sync now</button>
+      <button class="action" id="signOutBtn" style="display:none">Sign out</button>
+      <div class="annotstatus" id="syncMsg"></div>
+    </div>
     <div class="fieldlabel"><span>Field observations</span><span id="noteDate"></span></div>
     <div class="quickfields">
       <div class="quickfield"><label for="firstImpression">First impression</label><input id="firstImpression" autocomplete="off" /></div>
@@ -734,7 +742,7 @@ document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>({proof:showPr
 $('#exportBtn').onclick=()=>{let payload={version:1,exported:new Date().toISOString(),records:{personal:{},will:{}}};['personal','will'].forEach(ed=>specimens.forEach(s=>{try{payload.records[ed][s.id]=JSON.parse(localStorage.getItem(`pfg.${ed}.${s.id}`))||{owned:false,entries:[]}}catch(e){}}));let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='personal-field-guides-records.json';a.click();URL.revokeObjectURL(a.href)};
 $('#importInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let p=JSON.parse(await f.text());['personal','will'].forEach(ed=>Object.entries(p.records?.[ed]||{}).forEach(([id,d])=>localStorage.setItem(`pfg.${ed}.${id}`,JSON.stringify(d))));updateEditionUI();alert('Field records imported.')}catch(err){alert('Could not import this file.')}};
 window.focusNote=focusNote;window.openEntry=openEntry;
-renderNav();updateEditionUI();showSpecimen(current);
+renderNav();updateEditionUI();initCloud();showSpecimen(current);
 </script>
 
 <script>

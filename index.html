@@ -24,7 +24,7 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 .navbutton .kicker{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);display:block}
 .main{padding:30px;min-width:0;container-type:inline-size}.toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:18px}.toolbar .group{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .chip,button.action{border:1px solid var(--line);background:var(--paper2);padding:7px 10px;border-radius:2px;font-size:12px}.chip strong{font-weight:normal;letter-spacing:.08em;text-transform:uppercase}
-.book{background:var(--paper2);width:100%;height:clamp(480px,calc(100cqw / 1.33),78vh);box-shadow:0 20px 42px #0003, inset 0 0 0 1px rgba(255,255,255,.34);border:1px solid #cfc5b1;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;border-radius:2px}
+.book{background:var(--paper2);width:100%;height:clamp(420px,calc(100cqw / 1.56),70vh);box-shadow:0 20px 42px #0003, inset 0 0 0 1px rgba(255,255,255,.34);border:1px solid #cfc5b1;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;border-radius:2px}
 .book:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:24px;transform:translateX(-50%);background:linear-gradient(90deg,rgba(0,0,0,.13),rgba(255,255,255,.2) 46%,rgba(0,0,0,.1));box-shadow:0 0 24px rgba(0,0,0,.18);pointer-events:none;z-index:2}
 .book.turning,.bookpagewrap.turning{animation:pageturn .26s ease-out}
 @keyframes pageturn{0%{transform:perspective(1400px) rotateY(0deg);filter:brightness(1)}45%{transform:perspective(1400px) rotateY(var(--turn-angle,1.6deg));filter:brightness(.97)}100%{transform:perspective(1400px) rotateY(0deg);filter:brightness(1)}}
@@ -65,6 +65,11 @@ textarea{width:100%;min-height:180px;background:#f9f5ec;border:1px solid var(--l
 .fullscreenbody img.zoomed{max-width:none;max-height:none;cursor:zoom-in}
 .fullscreenbody img.maxzoom{cursor:zoom-out}
 .fullscreenopen{overflow:hidden}
+.readerpage{display:flex;align-items:center;justify-content:center;padding:28px 34px;overflow:hidden}
+.readerbutton{width:100%;height:100%;border:0;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;cursor:zoom-in}
+.readerbutton:focus{outline:2px solid var(--deep);outline-offset:4px}
+.readercanvas{max-width:100%;max-height:100%;width:auto;height:auto;background:#fff;box-shadow:0 10px 24px rgba(0,0,0,.16)}
+.readerempty{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs" type="module"></script>
 <script type="module">
@@ -177,7 +182,7 @@ function anchorForPage(page){
 function anchorPage(id){return anchorById(id)?.page||1}
 function showAnchor(id){
   const a=anchorById(id); if(!a)return;
-  showAnnotator(a.page);
+  showBookAtPage(a.page);
 }
 
 let edition=localStorage.getItem('pfg.edition')||'personal';
@@ -188,6 +193,7 @@ let cloudUser=null;
 let current=specimens[0].id;
 let currentEntryId='current';
 let noteMode='type';
+let readerPage=1;
 let inkStrokes=[];
 let activeStroke=null;
 let inkPointerMoved=false;
@@ -200,8 +206,11 @@ function getData(id){try{let d=JSON.parse(localStorage.getItem(key(id)))||blankD
 function setData(id,d){localStorage.setItem(key(id),JSON.stringify(d))}
 function renderNav(filter=''){
  const q=filter.trim().toLowerCase();
- $('#nav').innerHTML=specimens.filter(s=>!q||[s.name,s.house,s.encounter,s.family,s.summary,...s.materials,...s.associations,...(s.anchors||[]).map(id=>anchorById(id)?.label||id),collectionLabels[getData(s.id).collectionStatus||'unmarked']].join(' ').toLowerCase().includes(q)||getData(s.id).entries.some(e=>[e.text,...Object.values(e.fields||{})].join(' ').toLowerCase().includes(q))).map(s=>`<button class="navbutton ${current===s.id?'active':''}" data-specimen="${s.id}"><span class="kicker">${s.chapter}</span>${s.name}</button>`).join('');
+ const specimenButtons=specimens.filter(s=>!q||[s.name,s.house,s.encounter,s.family,s.summary,...s.materials,...s.associations,...(s.anchors||[]).map(id=>anchorById(id)?.label||id),collectionLabels[getData(s.id).collectionStatus||'unmarked']].join(' ').toLowerCase().includes(q)||getData(s.id).entries.some(e=>[e.text,...Object.values(e.fields||{})].join(' ').toLowerCase().includes(q))).map(s=>`<button class="navbutton ${current===s.id?'active':''}" data-specimen="${s.id}"><span class="kicker">${s.chapter}</span>${s.name}</button>`).join('');
+ const anchorButtons=contentAnchors.filter(a=>!q||[a.label,a.type,a.id,`p.${a.page}`,`page ${a.page}`].join(' ').toLowerCase().includes(q)).map(a=>`<button class="navbutton ${current==='proof'&&readerPage<=a.page&&a.page<=readerPage+1?'active':''}" data-anchor="${a.id}"><span class="kicker">${a.type} · p.${a.page}</span>${a.label}</button>`).join('');
+ $('#nav').innerHTML=`${specimenButtons?`<div class="eyebrow" style="margin:10px 8px 6px">Field records</div>${specimenButtons}`:''}${anchorButtons?`<hr><div class="eyebrow" style="margin:10px 8px 6px">Book contents</div>${anchorButtons}`:''}`;
  document.querySelectorAll('[data-specimen]').forEach(b=>b.onclick=()=>showSpecimen(b.dataset.specimen));
+ document.querySelectorAll('[data-anchor]').forEach(b=>b.onclick=()=>showAnchor(b.dataset.anchor));
 }
 function updateEditionUI(){ $('#editionLabel').textContent=edition==='personal'?'Personal':'Will'; $('#switchEdition').textContent=edition==='personal'?'Switch to Will':'Switch to Personal'; loadInspector(); renderNav($('#search').value); }
 
@@ -352,7 +361,11 @@ function turnCurrentBook(delta){
   setTimeout(()=>goBookPage(delta),150);
 }
 function goBookPage(delta){
-  if(current==='proof'||$('#pdfCanvas')){
+  if(current==='proof'){
+    changeReaderPage(delta*2);
+    return;
+  }
+  if($('#pdfCanvas')){
     changeAnnoPage(delta);
     return;
   }
@@ -364,8 +377,8 @@ function goBookPage(delta){
 }
 function pageTurnControls(kind='specimen'){
   const i=specimens.findIndex(s=>s.id===current);
-  const prevDisabled=kind==='proof'?annotationPage<=1:i<=0;
-  const nextDisabled=kind==='proof'?annotationPage>=92:i>=specimens.length-1;
+  const prevDisabled=kind==='proof'?readerPage<=1:i<=0;
+  const nextDisabled=kind==='proof'?readerPage>=91:i>=specimens.length-1;
   return `<button class="pageedge prev" aria-label="Previous page" ${prevDisabled?'disabled':''} onclick="turnCurrentBook(-1)">‹</button><button class="pageedge next" aria-label="Next page" ${nextDisabled?'disabled':''} onclick="turnCurrentBook(1)">›</button>`;
 }
 function changeAnnoPage(delta){savePageInk(false);showAnnotator(annotationPage+delta)}
@@ -412,6 +425,36 @@ async function renderPdfPage(pageNo){
     console.error(e);
     if(state) state.textContent='Could not render this PDF page: '+(e.message||String(e));
   }
+}
+async function renderReaderSpread(){
+  const doc=await ensurePdf();
+  const pages=[readerPage,readerPage+1].filter(p=>p>=1&&p<=doc.numPages);
+  await Promise.all(pages.map(async pageNo=>{
+    const canvas=$(`#readerCanvas${pageNo===readerPage?'Left':'Right'}`);
+    const holder=canvas?.closest('.readerbutton');
+    if(!canvas||!holder)return;
+    const page=await doc.getPage(pageNo);
+    const natural=page.getViewport({scale:1});
+    const fitW=Math.max(220,holder.clientWidth-4);
+    const fitH=Math.max(300,holder.clientHeight-4);
+    const scale=Math.min(fitW/natural.width,fitH/natural.height,1.8);
+    const viewport=page.getViewport({scale});
+    const dpr=Math.max(1,window.devicePixelRatio||1);
+    canvas.width=Math.round(viewport.width*dpr);
+    canvas.height=Math.round(viewport.height*dpr);
+    canvas.style.width=viewport.width+'px';
+    canvas.style.height=viewport.height+'px';
+    const ctx=canvas.getContext('2d');
+    await page.render({canvasContext:ctx,viewport,transform:dpr===1?null:[dpr,0,0,dpr,0,0]}).promise;
+  }));
+}
+function showBookAtPage(pageNo){
+  readerPage=Math.max(1,Math.min(91,Number(pageNo)||1));
+  if(readerPage>1&&readerPage%2===0)readerPage-=1;
+  showProof();
+}
+function changeReaderPage(delta){
+  showBookAtPage(readerPage+delta);
 }
 function setPdfZoom(delta){pdfZoom=Math.max(.7,Math.min(2.2,pdfZoom+delta));renderPdfPage(annotationPage)}
 function fitPdfWidth(){pdfZoom=1;renderPdfPage(annotationPage)}
@@ -712,7 +755,18 @@ function showRegister(){current='register';renderNav($('#search').value);
  <div class="registergrid">${cards||'<p class="bodycopy">No specimens in this state yet.</p>'}</div><span class="folio">REGISTER</span></article></div>`;
  $('#noteTitle').textContent='Specimen Register';$('#xref').innerHTML='Choose a specimen to open its field record.';
 }
-function showProof(){current='proof';renderNav($('#search').value);showAnnotator(annotationPage||1);$('#noteTitle').textContent='Current proof';$('#xref').innerHTML='Use the page edges or arrow keys to turn the proof pages.';}
+function showProof(){
+  current='proof';renderNav($('#search').value);
+  const left=readerPage;
+  const right=readerPage+1;
+  $('#content').innerHTML=`<div class="book readerbook">${pageTurnControls('proof')}
+    <article class="page readerpage left"><button class="readerbutton" onclick="openProofPageImage(${left},'Proof page ${left}')" aria-label="Open proof page ${left} full screen"><canvas id="readerCanvasLeft" class="readercanvas"></canvas></button><span class="folio">p.${left}</span></article>
+    <article class="page readerpage right">${right<=92?`<button class="readerbutton" onclick="openProofPageImage(${right},'Proof page ${right}')" aria-label="Open proof page ${right} full screen"><canvas id="readerCanvasRight" class="readercanvas"></canvas></button><span class="folio">p.${right}</span>`:'<div class="readerempty">End of proof</div>'}</article>
+  </div>`;
+  $('#noteTitle').textContent='Current flowed proof';
+  $('#xref').innerHTML='Turn the full 92-page book with the page edges or arrow keys. Click a page to magnify it.';
+  renderReaderSpread();
+}
 function showJournal(){current='journal';renderNav($('#search').value);let rows=[];for(const s of specimens){let d=getData(s.id);d.entries.forEach(e=>rows.push({s,e}));}
  rows.sort((a,b)=>(b.e.date||'').localeCompare(a.e.date||''));$('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">${edition==='personal'?'Personal':'Will'} edition</div><h1>Field Records</h1><p class="lede">A searchable history of observations attached to specimens.</p>${rows.length?rows.map(({s,e})=>`<div class="noteitem"><button onclick="openEntry('${s.id}','${e.id}')"><strong>${s.name}</strong><time>${e.date}</time><div>${escapeHtml((e.text||e.fields?.firstImpression||e.fields?.remindsMe||'[handwritten entry]')).slice(0,240)}${(e.text||'').length>240?'…':''}</div></button></div>`).join(''):'<p class="bodycopy">No field records yet.</p>'}</article></div>`;}
 function showAbout(){current='about';renderNav($('#search').value);$('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">Working prototype</div><h1>A book with memory</h1><p class="lede">The reading object stays visually book-like, while specimens and field records become addressable data.</p><p class="bodycopy">This build adds Field Sessions: select one or more source-supported specimens, record opening / 15-minute / 1-hour / later observations, compare them side by side, add a handwritten Apple Pencil session page, and save the result back into each fragrance’s dated field history. Records currently live only in this browser. A production build can replace local storage with authenticated cloud sync without changing the book model.</p><div class="callout"><b>Not yet canonical:</b> This prototype is an interaction proof, not a final publication layout. Missing plates, recommendation sets, and unresolved source material remain unresolved.</div></article></div>`;}
@@ -897,13 +951,13 @@ window.addEventListener('keydown',ev=>{
   if(ev.key==='ArrowRight')turnCurrentBook(1);
   if(ev.key==='ArrowLeft')turnCurrentBook(-1);
 });
-window.addEventListener('resize',()=>{if(noteMode==='ink')resizeInkCanvas();if($('#pdfCanvas'))renderPdfPage(annotationPage)});
+window.addEventListener('resize',()=>{if(noteMode==='ink')resizeInkCanvas();if($('#pdfCanvas'))renderPdfPage(annotationPage);if(current==='proof')renderReaderSpread()});
 $('#signInBtn').onclick=sendMagicLink;$('#syncNowBtn').onclick=syncAll;$('#signOutBtn').onclick=signOutCloud;
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>({proof:showProof,journal:showJournal,about:showAbout}[b.dataset.view]()));
 $('#exportBtn').onclick=()=>{let payload={version:1,exported:new Date().toISOString(),records:{personal:{},will:{}}};['personal','will'].forEach(ed=>specimens.forEach(s=>{try{payload.records[ed][s.id]=JSON.parse(localStorage.getItem(`pfg.${ed}.${s.id}`))||{owned:false,entries:[]}}catch(e){}}));let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='personal-field-guides-records.json';a.click();URL.revokeObjectURL(a.href)};
 $('#importInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let p=JSON.parse(await f.text());['personal','will'].forEach(ed=>Object.entries(p.records?.[ed]||{}).forEach(([id,d])=>localStorage.setItem(`pfg.${ed}.${id}`,JSON.stringify(d))));updateEditionUI();alert('Field records imported.')}catch(err){alert('Could not import this file.')}};
 window.focusNote=focusNote;window.openEntry=openEntry;window.openPlateFullScreen=openPlateFullScreen;window.openProofPageFromSpecimen=openProofPageFromSpecimen;window.turnCurrentBook=turnCurrentBook;
-renderNav();updateEditionUI();initCloud();showSpecimen(current);
+renderNav();updateEditionUI();initCloud();showProof();
 </script>
 
 <script>

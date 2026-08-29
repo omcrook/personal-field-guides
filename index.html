@@ -253,6 +253,7 @@ function openFullScreen(title, src){
   img.addEventListener('click',ev=>{ev.stopPropagation();cycleFullScreenZoom(img)});
   overlay.addEventListener('click',ev=>{if(ev.target===overlay||ev.target.classList.contains('fullscreenbody'))closeFullScreen()});
   document.body.appendChild(overlay);
+  overlay.querySelector('#fullscreenClose')?.addEventListener('click',ev=>{ev.stopPropagation();closeFullScreen()});
   document.body.classList.add('fullscreenopen');
   $('#fullscreenClose')?.focus();
 }
@@ -284,6 +285,28 @@ function closeFullScreen(){
 function openPlateFullScreen(id){
   const s=specimens.find(x=>x.id===id);
   if(s?.plate) openFullScreen(s.name,s.plate);
+}
+function specimenProofPage(s){
+  return s?.proof||Math.min(...(s?.anchors||[]).map(anchorPage).filter(Boolean));
+}
+async function openProofPageImage(pageNo,title='Current proof page'){
+  try{
+    const doc=await ensurePdf();
+    const page=await doc.getPage(Math.max(1,Math.min(doc.numPages,Number(pageNo)||1)));
+    const viewport=page.getViewport({scale:2.4});
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.round(viewport.width);
+    canvas.height=Math.round(viewport.height);
+    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+    openFullScreen(title,canvasDataUrl(canvas));
+  }catch(e){
+    alert('Could not open that proof page yet. Try the Current flowed proof view.');
+  }
+}
+function openProofPageFromSpecimen(id){
+  const s=specimens.find(x=>x.id===id);
+  const page=specimenProofPage(s);
+  if(page) openProofPageImage(page,`${s.name} · proof p.${page}`);
 }
 function canvasDataUrl(canvas){
   try{return canvas?.toDataURL('image/png')||''}catch(e){return ''}
@@ -632,10 +655,13 @@ function setRegisterFilter(filter){registerFilter=filter;showRegister()}
 function showSpecimen(id){current=id;currentEntryId='current';let s=specimens.find(x=>x.id===id);renderNav($('#search').value);let d=getData(s.id);
  const mats=s.materials.length?s.materials.join(' · '):'Open field — no approved material list supplied.';
  const assocs=s.associations.length?s.associations.join('<br>'):'Open field.';
- const proofLink=s.proof?`<a href="assets/current-proof-v2.pdf#page=${s.proof}" target="_blank">Read in current proof · p.${s.proof}</a>`:'<span>Current proof location not asserted here.</span>';
+ const sourcePage=specimenProofPage(s);
+ const proofLink=sourcePage?`<a href="assets/current-proof-v2.pdf#page=${sourcePage}" target="_blank">Read in current proof · p.${sourcePage}</a>`:'<span>Current proof location not asserted here.</span>';
  const right=s.plate
    ? `<button class="platebutton" onclick="openPlateFullScreen('${s.id}')" aria-label="Open ${escapeHtml(s.name)} artwork full screen"><span class="zoommark" aria-hidden="true">+</span><img class="plate" src="${s.plate}" alt="${s.name} approved plate"/></button>`
-   : `<div class="blankplate"><div class="inner"><div class="eyebrow">Specimen record</div><h2>${s.name}</h2><p>No separate approved production plate is being substituted here. The digital edition keeps this space textual until an approved source exists.</p></div></div>`;
+   : sourcePage
+    ? `<button class="platebutton blankplate" onclick="openProofPageFromSpecimen('${s.id}')" aria-label="Open ${escapeHtml(s.name)} proof page full screen"><span class="zoommark" aria-hidden="true">+</span><div class="inner"><div class="eyebrow">Current proof source</div><h2>${s.name}</h2><p>Open proof page ${sourcePage} full screen.</p></div></button>`
+    : `<div class="blankplate"><div class="inner"><div class="eyebrow">Specimen record</div><h2>${s.name}</h2><p>No separate approved production plate is being substituted here. The digital edition keeps this space textual until an approved source exists.</p></div></div>`;
  const anchors=(s.anchors||[]).map(id=>anchorById(id)).filter(Boolean);
  const anchorHtml=anchors.length?anchors.map(a=>`<div class="anchorcard"><h4>${a.label}</h4><p>Stable content anchor · current proof p.${a.page}</p><div class="anchorlinks"><button onclick="showAnchor('${a.id}')">Open anchored page</button></div></div>`).join(''):'<p class="bodycopy">No stable cross-reference assigned.</p>';
  const lifecycle=['want_to_smell','sampled','owned','finished'].map(st=>`<button class="${d.collectionStatus===st?'active':''}" onclick="setCollectionStatus('${st}')">${collectionLabels[st]}</button>`).join('');
@@ -876,7 +902,7 @@ $('#signInBtn').onclick=sendMagicLink;$('#syncNowBtn').onclick=syncAll;$('#signO
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>({proof:showProof,journal:showJournal,about:showAbout}[b.dataset.view]()));
 $('#exportBtn').onclick=()=>{let payload={version:1,exported:new Date().toISOString(),records:{personal:{},will:{}}};['personal','will'].forEach(ed=>specimens.forEach(s=>{try{payload.records[ed][s.id]=JSON.parse(localStorage.getItem(`pfg.${ed}.${s.id}`))||{owned:false,entries:[]}}catch(e){}}));let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='personal-field-guides-records.json';a.click();URL.revokeObjectURL(a.href)};
 $('#importInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let p=JSON.parse(await f.text());['personal','will'].forEach(ed=>Object.entries(p.records?.[ed]||{}).forEach(([id,d])=>localStorage.setItem(`pfg.${ed}.${id}`,JSON.stringify(d))));updateEditionUI();alert('Field records imported.')}catch(err){alert('Could not import this file.')}};
-window.focusNote=focusNote;window.openEntry=openEntry;window.openPlateFullScreen=openPlateFullScreen;window.turnCurrentBook=turnCurrentBook;
+window.focusNote=focusNote;window.openEntry=openEntry;window.openPlateFullScreen=openPlateFullScreen;window.openProofPageFromSpecimen=openProofPageFromSpecimen;window.turnCurrentBook=turnCurrentBook;
 renderNav();updateEditionUI();initCloud();showSpecimen(current);
 </script>
 

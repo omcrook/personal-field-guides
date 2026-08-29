@@ -1,15 +1,19 @@
 
-const CACHE='pfg-fragrance-v1-10';
+const CACHE='pfg-final-v2';
 const APP_SHELL=[
   './',
   './index.html',
   './manifest.webmanifest',
-  './content_anchor_manifest_v1.json',
-  './assets/current-proof-v2.pdf',
   './assets/4711.png',
-  './assets/4711-corrected.png',
-  './assets/marlborough.png',
-  './assets/green-water.jpeg',
+  './assets/CITRUS_AURANTIUM.jpg',
+  './assets/GARAGE.jpg',
+  './assets/GREEN_WATER.jpeg',
+  './assets/MARLBOROUGH.png',
+  './assets/OBJECTS_OF_SMELL.jpg',
+  './assets/PETRICHOR.jpg',
+  './assets/Personal_Field_Guide_No01_Canvas_Cover_Concept.png',
+  './assets/RESIN_SPICE_TOBACCO_LEATHER.png',
+  './assets/RIVER_STONE.jpg',
   './icons/icon-192.svg',
   './icons/icon-512.svg'
 ];

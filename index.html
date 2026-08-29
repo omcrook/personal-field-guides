@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>The Personal Field Guides — Digital Prototype</title>
+<title>The Personal Field Guides — No. 01: Fragrance</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Field Guides" />
@@ -70,6 +70,101 @@ textarea{width:100%;min-height:180px;background:#f9f5ec;border:1px solid var(--l
 .readerbutton:focus{outline:2px solid var(--deep);outline-offset:4px}
 .readercanvas{max-width:100%;max-height:100%;width:auto;height:auto;background:#fff;box-shadow:0 10px 24px rgba(0,0,0,.16)}
 .readerempty{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+
+/* V1.3 — Book-first fullscreen reading */
+html,body{width:100%;height:100%;overflow:hidden;background:#cfc8bb}
+.shell{display:block;max-width:none;width:100vw;height:100vh;min-height:0;background:#cfc8bb;box-shadow:none}
+.main{padding:0;width:100vw;height:100vh;min-width:0;display:flex;align-items:center;justify-content:center;overflow:hidden;container-type:size}
+.main>.toolbar{display:none}
+#content{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.book.readerbook{
+  width:min(100vw,calc(100vh * 1.3308));
+  height:min(100vh,calc(100vw / 1.3308));
+  max-width:100vw;max-height:100vh;
+  margin:auto;border:0;border-radius:0;
+  box-shadow:0 18px 60px rgba(0,0,0,.24);
+}
+.readerbook .readerpage{padding:0;overflow:hidden}
+.readerbook .folio{display:none}
+.readerbook .readerbutton{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.readerbook .readercanvas{max-width:100%;max-height:100%;display:block}
+.readerbook:before{width:18px}
+.pageedge{position:fixed;top:50%;z-index:24;width:44px;height:88px;opacity:.42;background:rgba(247,242,232,.78);backdrop-filter:blur(5px)}
+.pageedge:hover,.pageedge:focus{opacity:.95}
+.pageedge.prev{left:0}.pageedge.next{right:0}
+
+.readerMenuButton{
+  position:fixed;left:max(14px,env(safe-area-inset-left));top:max(14px,env(safe-area-inset-top));
+  z-index:60;width:44px;height:44px;border:1px solid rgba(38,37,31,.28);
+  background:rgba(247,242,232,.9);box-shadow:0 8px 24px rgba(0,0,0,.16);
+  display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;
+}
+.readerMenuButton:hover,.readerMenuButton:focus{background:#fffaf0;outline:2px solid rgba(51,53,47,.22)}
+
+.readerBackdrop{position:fixed;inset:0;z-index:48;background:rgba(24,24,20,.28);opacity:0;pointer-events:none;transition:opacity .18s ease}
+.readerBackdrop.open{opacity:1;pointer-events:auto}
+
+.rail{
+  position:fixed;left:0;top:0;z-index:55;width:min(390px,88vw);height:100dvh;
+  padding:28px 22px calc(28px + env(safe-area-inset-bottom));
+  border-right:1px solid var(--line);background:#e6dece;
+  box-shadow:12px 0 36px rgba(0,0,0,.22);
+  transform:translateX(-105%);transition:transform .2s ease;overflow:auto;
+}
+.rail.open{transform:none}
+.railClose,.inspectorClose{float:right;border:1px solid var(--line);background:transparent;width:34px;height:34px;font-size:20px;line-height:1}
+.rail .toolbar{display:block;margin:16px 0 0}
+.rail .toolbar .group{display:grid;grid-template-columns:1fr;gap:6px;margin-top:8px}
+.rail .toolbar .chip,.rail .toolbar button.action,.rail .toolbar label.action{width:100%;display:block;text-align:left;margin:0}
+.rail .toolbar .chip{padding:8px 10px}
+.rail .menuSectionTitle{margin-top:18px}
+
+.inspector{
+  position:fixed;right:0;top:0;z-index:58;width:min(430px,94vw);height:100dvh;
+  padding:26px 22px calc(28px + env(safe-area-inset-bottom));
+  background:#e6dece;border-left:1px solid var(--line);box-shadow:-12px 0 36px rgba(0,0,0,.22);
+  transform:translateX(105%);transition:transform .2s ease;overflow:auto;
+}
+.inspector.open{transform:none}
+
+body.drawer-open{overflow:hidden}
+
+/* Non-reader modes remain usable, but they appear as deliberate overlays/pages rather than permanent chrome. */
+#content>.book:not(.readerbook){
+  width:min(1180px,calc(100vw - 48px));height:min(82vh,820px);
+  margin:auto;border-radius:0;
+}
+#content>.annotator,#content>.book[style*="display:block"]{max-width:1180px}
+
+@media(max-width:760px){
+  .book.readerbook{width:100vw;height:100vh;grid-template-columns:1fr}
+  .readerbook:before{display:none}
+  .readerbook .page.left{display:none}
+  .readerbook .page.right{display:block}
+  .pageedge{width:38px;height:76px}
+}
+
+
+/* DELIVERY V2 — source-gated full-screen book */
+#content{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.cleanbook{position:relative;width:min(100vw,calc(100vh * .6656));height:min(100vh,calc(100vw / .6656));background:#f3ecdc;color:#26251f;box-shadow:0 18px 60px rgba(0,0,0,.25);overflow:hidden}
+.cleanpage{position:absolute;inset:0;padding:8% 9% 7%;overflow:hidden;background:#f3ecdc}
+.cleanpage h1{font-family:Georgia,serif;font-size:clamp(29px,4.3vh,48px);font-weight:normal;line-height:1.05;margin:.15em 0 .7em}
+.cleanpage .sub{font-family:Georgia,serif;font-style:italic;font-size:clamp(16px,2.2vh,22px)}
+.cleanpage .ey{font:10px/1.3 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6a655b;margin-bottom:7%}
+.cleanpage .prose{font-family:Georgia,serif;font-size:clamp(15px,2.05vh,20px);line-height:1.5;max-width:37em}
+.cleanpage .prose p{margin:0 0 .75em}
+.cleanpage.plate{padding:0}
+.cleanplatebutton{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;background:#f3ecdc;padding:0;cursor:zoom-in}
+.cleanplatebutton:focus{outline:2px solid rgba(51,53,47,.45);outline-offset:-6px}
+.cleanpage.plate img{width:100%;height:100%;object-fit:contain;background:#f3ecdc}
+.cleanpage .legenditem{border-top:1px solid #aaa18f;padding:10px 0}
+.cleanpage .legenditem b{font:600 11px/1.3 system-ui,sans-serif;letter-spacing:.08em}
+.cleanpage .legenditem p{font-family:Georgia,serif;font-size:14px;line-height:1.4;margin:4px 0 0}
+.cleanfolio{position:absolute;right:4%;bottom:2.3%;font:10px system-ui,sans-serif;color:#777062}
+.cleanprogress{position:fixed;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:36;background:rgba(247,242,232,.9);border:1px solid rgba(38,37,31,.2);padding:5px 9px;font:11px system-ui,sans-serif}
+.cleannav{position:fixed;inset:0;z-index:22;pointer-events:none}.cleannav button{position:absolute;top:0;width:20%;height:100%;border:0;background:transparent;pointer-events:auto;font-size:0}.cleannav .prev{left:0}.cleannav .next{right:0}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs" type="module"></script>
 <script type="module">
@@ -81,26 +176,32 @@ textarea{width:100%;min-height:180px;background:#f9f5ec;border:1px solid var(--l
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<button class="readerMenuButton" id="readerMenuButton" aria-label="Open book menu" aria-expanded="false">☰</button>
+<div class="readerBackdrop" id="readerBackdrop"></div>
 <div class="shell">
-  <aside class="rail">
+  <aside class="rail" id="readerMenu" aria-label="Book menu">
+    <button class="railClose" id="railClose" aria-label="Close book menu">×</button>
     <div class="brand">The Personal Field Guides<strong>No. 01 — Fragrance</strong></div>
-    <p class="small">Working digital prototype. Shared book core; Personal and Will field records remain separate.</p>
+    <p class="small">The book is primary. Contents, field records, account tools, and edition controls live here when needed.</p>
+    <div class="toolbar">
+      <div class="group"><span class="chip">Edition: <strong id="editionLabel">Personal</strong></span><button class="action" id="switchEdition">Switch to Will</button></div>
+      <div class="group"><button class="action" id="openNotes">Open field record</button><button class="action" id="exportBtn">Export records</button><label class="action" style="cursor:pointer">Import<input type="file" id="importInput" accept="application/json" hidden /></label></div>
+    </div>
     <hr />
-    <input id="search" class="search" placeholder="Search specimens + notes" />
-    <div id="nav"></div>
+    <div class="eyebrow menuSectionTitle">Find</div>
+    <input id="search" class="search" placeholder="Search book + field records" />
+    <div id="nav"></div><hr><div class="eyebrow menuSectionTitle">Book Contents</div><div id="deliveryContents"></div>
     <hr />
-    <button class="navbutton" data-view="proof"><span class="kicker">Book</span>Current flowed proof</button>
+    <div class="eyebrow menuSectionTitle">Modes</div>
+    <button class="navbutton" data-view="proof"><span class="kicker">Book</span>Return to full book</button>
     <button class="navbutton" data-view="journal"><span class="kicker">Field records</span>Journal index</button>
     <button class="navbutton" data-view="about"><span class="kicker">Prototype</span>How this works</button>
   </aside>
   <main class="main">
-    <div class="toolbar">
-      <div class="group"><span class="chip">Edition: <strong id="editionLabel">Personal</strong></span><button class="action" id="switchEdition">Switch to Will</button></div>
-      <div class="group"><button class="action" id="openNotes">Field note</button><button class="action" id="exportBtn">Export records</button><label class="action" style="cursor:pointer">Import<input type="file" id="importInput" accept="application/json" hidden /></label></div>
-    </div>
     <section id="content"></section>
   </main>
   <aside class="inspector" id="inspector">
+    <button class="inspectorClose" id="inspectorClose" aria-label="Close field record">×</button>
     <div class="eyebrow">Field record</div>
     <h2 id="noteTitle">Select a specimen</h2>
     <div class="owned"><input type="checkbox" id="owned" /><label for="owned">Bottle owned / in collection</label></div>
@@ -145,13 +246,13 @@ textarea{width:100%;min-height:180px;background:#f9f5ec;border:1px solid var(--l
 </div>
 <script>
 const specimens = [
- {id:'4711',anchors:['4711-memory','citrus-aurantium'],name:'4711',house:'Mäurer & Wirtz',encounter:'THE TEST',family:'Citrus / Herbal / Fresh',materials:['Bergamot','Lemon','Orange','Lavender','Rosemary','Neroli','Petitgrain'],associations:['Grandpa','Fishing','Time','Attention','Inclusion'],fieldNote:'Sometimes the ingredients remain perfectly distinct. Sometimes memory overwhelms the formula entirely. Both are true.',role:'Memory plate',plate:'assets/4711-corrected.png',proof:11,chapter:'Chapter I',summary:'Grandpa / citrus-herbal memory',source:'Corrected display plate from locked visual master'},
- {id:'marlborough',anchors:['marlborough-essay','resin-spice'],name:'Geo. F. Trumper Marlborough',house:'Geo. F. Trumper',encounter:'THE COURTSHIP',family:'Tobacco / Leather / Warm',materials:[],associations:['A shower','Sunlight coming through the window','Skin with skin','An afternoon with nowhere else we particularly needed to be'],fieldNote:'A fragrance can become an invitation to a life you imagine yourself living.',role:'Memory plate',plate:'assets/marlborough.png',proof:18,chapter:'Chapter II',summary:'Marlborough essay adjacency',source:'Locked visual master'},
+ {id:'4711',anchors:['4711-memory','citrus-aurantium'],name:'4711',house:'Mäurer & Wirtz',encounter:'THE TEST',family:'Citrus / Herbal / Fresh',materials:['Bergamot','Lemon','Orange','Lavender','Rosemary','Neroli','Petitgrain'],associations:['Grandpa','Fishing','Time','Attention','Inclusion'],fieldNote:'Sometimes the ingredients remain perfectly distinct. Sometimes memory overwhelms the formula entirely. Both are true.',role:'Memory plate',plate:'assets/4711.png',proof:11,chapter:'Chapter I',summary:'Grandpa / citrus-herbal memory',source:'Corrected display plate from locked visual master'},
+ {id:'marlborough',anchors:['marlborough-essay','resin-spice'],name:'Geo. F. Trumper Marlborough',house:'Geo. F. Trumper',encounter:'THE COURTSHIP',family:'Tobacco / Leather / Warm',materials:[],associations:['A shower','Sunlight coming through the window','Skin with skin','An afternoon with nowhere else we particularly needed to be'],fieldNote:'A fragrance can become an invitation to a life you imagine yourself living.',role:'Memory plate',plate:'assets/MARLBOROUGH.png',proof:18,chapter:'Chapter II',summary:'Marlborough essay adjacency',source:'Locked visual master'},
  {id:'chanel-pour-monsieur',anchors:['marlborough-essay'],name:'Chanel Pour Monsieur',house:'Chanel',encounter:'THE COURTSHIP',family:'Citrus / Woods / Sophistication',materials:[],associations:['Craft','Confidence','The person I was constructing'],fieldNote:'A fragrance can be a sketch of a future self. Not a costume. A possibility.',role:'Specimen',plate:null,proof:null,chapter:'Chapter II',summary:'Craft / confidence / future self',source:'No approved standalone plate in current source set'},
  {id:'cool-water',anchors:['becoming'],name:'Cool Water',house:'',encounter:'THE COURTSHIP',family:'Fresh / Aquatic / Green',materials:[],associations:['Possibility','A doorway','Something was next','Anything'],fieldNote:'What?',role:'Specimen',plate:null,proof:null,chapter:'Becoming',summary:'Possibility / doorway',source:'No approved standalone plate in current source set'},
  {id:'hacivat',anchors:['river-stone','petrichor'],name:'Hacivat',house:'',encounter:'THE CHALLENGE',family:'Green / Moss / Mineral',materials:['Moss','Dampness','Wet stone','Mineral air'],associations:['The Merced','Granite','River','Mist'],fieldNote:'The river may not explain the formula. It explains me. I just had to remember it first.',role:'Specimen',plate:null,proof:null,chapter:'Chapter III',summary:'The Merced / wet stone / mineral air',source:'No approved standalone Hacivat plate in current source set'},
  {id:'baccarat-rouge-540',anchors:['best-of-fire'],name:'Baccarat Rouge 540',house:'',encounter:'THE OUTLIER',family:'Amber / Woody / Sweet',materials:[],associations:['Fire','Youth','Possibility'],fieldNote:"You shouldn't be here. But here you are. Apparently I don't know myself as well as I thought.",role:'Specimen',plate:null,proof:42,chapter:'Chapter VI',summary:'Fire / youth / possibility',source:'Best of Fire plate unresolved'},
- {id:'green-water',anchors:['green-water','in-parallel'],name:'Green Water',house:'',encounter:'THE COURTSHIP',family:'Citrus / Green / Fresh',materials:[],associations:['Amy','Will','Maddie','Garden','Continuity'],fieldNote:'Not because it reminds me of who I was. Because it reminds me of what I was, who I am, and where I hope to go.',role:'Memory / family plate',plate:'assets/green-water.jpeg',proof:47,chapter:'Chapter VII',summary:'Family / garden / continuity',source:'Locked visual master'}
+ {id:'green-water',anchors:['green-water','in-parallel'],name:'Green Water',house:'',encounter:'THE COURTSHIP',family:'Citrus / Green / Fresh',materials:[],associations:['Amy','Will','Maddie','Garden','Continuity'],fieldNote:'Not because it reminds me of who I was. Because it reminds me of what I was, who I am, and where I hope to go.',role:'Memory / family plate',plate:'assets/GREEN_WATER.jpeg',proof:47,chapter:'Chapter VII',summary:'Family / garden / continuity',source:'Locked visual master'}
 ];
 
 const contentAnchors = [
@@ -181,8 +282,11 @@ function anchorForPage(page){
 }
 function anchorPage(id){return anchorById(id)?.page||1}
 function showAnchor(id){
-  const a=anchorById(id); if(!a)return;
-  showBookAtPage(a.page);
+  const m={"intro": "introduction", "citrus-aurantium": "peel-citrus-herbs-and-green-light-plate", "4711-memory": "4711", "resin-spice": "spice-amber-resin-tobacco-and-leather-plate", "marlborough-essay": "geo-f-trumper-marlborough", "petrichor": "rain-stone-forest-earth-and-river-plate", "river-stone": "the-merced-plate", "garage": "smoke-garage-ink-tar-and-other-wildcards-plate", "objects-of-smell": "objects-of-smell-plate", "becoming": "becoming", "best-of-fire": "baccarat-rouge-540", "green-water": "green-water", "in-parallel": "in-parallel", "specimen-register": "specimen-register", "discovery-register": "discovery-register", "field-record": "field-record", "undiscovered-specimens": "undiscovered-specimens"};
+  const target=m[id];
+  if(!target)return;
+  const i=deliveryBook.findIndex(p=>p.anchor===target || p.anchor?.startsWith(target));
+  if(i>=0)goDelivery(i);
 }
 
 let edition=localStorage.getItem('pfg.edition')||'personal';
@@ -199,6 +303,58 @@ let activeStroke=null;
 let inkPointerMoved=false;
 let inkCtx=null;
 const $=s=>document.querySelector(s);
+
+const deliveryBook=[{"kind":"plate","eyebrow":"Cover","title":"The Personal Field Guides","asset_key":"OC_MONOGRAM_COVER","anchor":"cover"},{"kind": "title", "eyebrow": "The Personal Field Guides · No. 01", "title": "Fragrance", "subtitle": "A field guide to memory, identity, and becoming", "anchor": "title"}, {"kind": "text", "eyebrow": "Introduction", "title": "A fragrance is never only a fragrance.", "paragraphs": ["A fragrance is never only a fragrance.", "It is a chemical composition. Notes. Materials. Molecules. Structure. But that is not why we remember them.", "We remember them because they attach themselves to something else:", "- a person\n- a place\n- a moment\n- a version of ourselves that existed before we understood it was temporary", "The book is a field guide to memory, identity, and becoming."], "anchor": "introduction"}, {"kind": "legend", "eyebrow": "The Legend", "title": "How encounters behave", "items": [["THE LIGHTNING BOLT", "One smell and I know. No courtship, no persuasion, no second date required."], ["THE COURTSHIP", "There's something between us. I'm interested, but I'm not ready to take you home. Let's spend some time together. No promises."], ["THE CHALLENGE", "I dare you. Chances are I won't like you, but hell, I'm game. Let's get weird."], ["THE TEST", "I still love you somewhere else. Wet stone. Orange blossom. Leather. Smoke. Pine. A garage. Now let's find out if I want you on my skin."], ["THE OUTLIER", "You shouldn't be here. But here you are. Apparently I don't know myself as well as I thought."]], "anchor": "legend"}, {"kind": "text", "eyebrow": "Chapter I", "title": "Peel, Citrus, Herbs and Green Light", "paragraphs": ["I don't think I love citrus.", "At least not in the way fragrance usually asks me to love it.", "I don't particularly want an orange.", "I want the orange tree.", "I want the oil that spits from the peel when you bend it. The bitter white pith underneath. The waxy green leaves crushed between your fingers. The blossoms when they arrive and somehow manage to smell both innocent and sexual. The wood. The dirt.", "The fruit by itself is almost too easy."], "anchor": "peel-citrus-herbs-and-green-light"}, {"kind": "text", "eyebrow": "Peel, Citrus, Herbs and Green Light", "title": "", "paragraphs": ["The citrus fragrances I respond to tend to have something interfering with the fruit: bitterness, herbs, woods, moss, petitgrain, neroli, dirt.", "Something green enough to keep the sweetness honest.", "I require the interference.", "Dissonance.", "The smell is often strongest at the transition—the moment dry becomes wet, or wet begins to warm again.", "That interval may be the most powerful of all: the moment one thing becomes another, when both are briefly present at once.", "The chimera."], "anchor": "peel-citrus-herbs-and-green-light-2"}, {"kind": "text", "eyebrow": "Peel, Citrus, Herbs and Green Light", "title": "", "paragraphs": ["That's what I want from this family of fragrances.", "Not necessarily photorealism.", "I'm not asking a perfumer to reproduce an orange tree molecule by molecule.", "I want the relationships to remain intact.", "I need the pieces."], "anchor": "peel-citrus-herbs-and-green-light-3"}, {"kind": "plate", "eyebrow": "Plate", "title": "Peel, Citrus, Herbs and Green Light", "asset_key": "CITRUS_AURANTIUM", "anchor": "peel-citrus-herbs-and-green-light-plate"}, {"kind": "text", "eyebrow": "Memory", "title": "4711", "paragraphs": ["Before I understood fragrance as identity, seduction, aspiration, or taste, there was my grandfather.", "4711 belongs to him.", "Not exclusively, of course.", "Millions of people have worn it for nearly two centuries.", "But memory is selfish that way.", "A fragrance can belong to the world and still belong completely to one person.", "My grandfather was the closest thing I had to a father when I was young."], "anchor": "4711"}, {"kind": "text", "eyebrow": "4711", "title": "", "paragraphs": ["He gave me something uncomplicated:", "Time.", "Attention.", "Inclusion.", "He took me fishing.", "He let me into his world.", "And somewhere inside the accumulation of those experiences is the cool citrus-herbal smell of 4711."], "anchor": "4711-2"}, {"kind": "text", "eyebrow": "4711", "title": "", "paragraphs": ["What interests me now is how little the fragrance behaves like the fragrances I eventually learned to covet.", "It isn't enormous.", "It doesn't announce wealth or sex or sophistication.", "It doesn't seem particularly interested in becoming anybody.", "It arrives.", "It refreshes.", "It disappears."], "anchor": "4711-3"}, {"kind": "text", "eyebrow": "4711", "title": "", "paragraphs": ["Maybe that's part of why the memory has lasted longer than the fragrance ever could.", "I can dissect it now if I want to.", "Bergamot.", "Lemon.", "Orange.", "Lavender.", "Rosemary."], "anchor": "4711-4"}, {"kind": "text", "eyebrow": "4711", "title": "", "paragraphs": ["Neroli.", "Petitgrain.", "The taxonomy is useful, particularly for what we're doing here.", "But that's not what I smell first.", "I smell Grandpa.", "And that creates one of the rules of this field guide that no amount of note-taking will solve:", "Sometimes the ingredients remain perfectly distinct, and sometimes memory overwhelms the formula entirely."], "anchor": "4711-5"}, {"kind": "text", "eyebrow": "4711", "title": "", "paragraphs": ["Both are true."], "anchor": "4711-6"}, {"kind": "plate", "eyebrow": "Plate", "title": "4711", "asset_key": "4711", "anchor": "4711-plate"}, {"kind": "text", "eyebrow": "Chapter II", "title": "Spice, Amber, Resin, Tobacco and Leather", "paragraphs": ["Some fragrances are attractive because they are beautiful.", "Others are attractive because they suggest a life.", "This category has always been dangerous for me.", "Spice. Amber. Resin. Tobacco. Leather.", "These are not neutral materials.", "They imply something.", "A room."], "anchor": "spice-amber-resin-tobacco-and-leather"}, {"kind": "text", "eyebrow": "Spice, Amber, Resin, Tobacco and Leather", "title": "", "paragraphs": ["A chair.", "A jacket.", "A person who has already lived a little.", "They carry history.", "I have always been drawn to things that feel touched by time.", "Not old.", "Not worn out."], "anchor": "spice-amber-resin-tobacco-and-leather-2"}, {"kind": "text", "eyebrow": "Spice, Amber, Resin, Tobacco and Leather", "title": "", "paragraphs": ["Experienced.", "A brand-new leather jacket is interesting.", "A leather jacket that has been everywhere is something else.", "The material remembers.", "That is what I am looking for."], "anchor": "spice-amber-resin-tobacco-and-leather-3"}, {"kind": "plate", "eyebrow": "Plate", "title": "Spice, Amber, Resin, Tobacco and Leather", "asset_key": "RESIN_SPICE_TOBACCO_LEATHER", "anchor": "spice-amber-resin-tobacco-and-leather-plate"}, {"kind": "text", "eyebrow": "Specimen", "title": "Geo. F. Trumper Marlborough", "paragraphs": ["Marlborough was one of those fragrances that seemed to arrive before I had words for what I was looking for.", "Warm.", "Dry.", "Comfortable.", "Human.", "It wasn't trying to impress anyone.", "It wasn't a performance."], "anchor": "geo-f-trumper-marlborough"}, {"kind": "text", "eyebrow": "Geo. F. Trumper Marlborough", "title": "", "paragraphs": ["It was a room after the guests had left.", "A shower.", "Sunlight coming through the window.", "Skin with skin.", "An afternoon with nowhere else we particularly needed to be.", "The attraction was never just the fragrance.", "It was the possibility of a moment."], "anchor": "geo-f-trumper-marlborough-2"}, {"kind": "text", "eyebrow": "Geo. F. Trumper Marlborough", "title": "", "paragraphs": ["A fragrance can become an invitation to a life you imagine yourself living.", "That is part of its power.", "And part of its danger.", "Because sometimes we are not attracted to the fragrance itself.", "We are attracted to the person we become while wearing it."], "anchor": "geo-f-trumper-marlborough-3"}, {"kind": "plate", "eyebrow": "Plate", "title": "Geo. F. Trumper Marlborough", "asset_key": "MARLBOROUGH", "anchor": "geo-f-trumper-marlborough-plate"}, {"kind": "text", "eyebrow": "Specimen", "title": "Chanel Pour Monsieur", "paragraphs": ["Some fragrances are about desire.", "Others are about identity.", "Chanel Pour Monsieur belongs to the second category.", "It is controlled.", "Precise.", "Elegant without needing to announce elegance.", "It suggested something I wanted before I understood how to become it."], "anchor": "chanel-pour-monsieur"}, {"kind": "text", "eyebrow": "Chanel Pour Monsieur", "title": "", "paragraphs": ["Craft.", "Confidence.", "A certain kind of restraint.", "The person who knew exactly what he was doing.", "At the time, I didn't.", "But perhaps that is why fragrance matters.", "It can be a sketch of a future self."], "anchor": "chanel-pour-monsieur-2"}, {"kind": "text", "eyebrow": "Chanel Pour Monsieur", "title": "", "paragraphs": ["Not a costume.", "A possibility."], "anchor": "chanel-pour-monsieur-3"}, {"kind": "text", "eyebrow": "Specimen", "title": "Cool Water", "paragraphs": ["Some fragrances are about arrival.", "Others are about possibility.", "Cool Water belongs to possibility.", "I was young, working in high-end retail, surrounded every day by people buying versions of themselves.", "Clothes.", "Shoes.", "Watches."], "anchor": "cool-water"}, {"kind": "text", "eyebrow": "Cool Water", "title": "", "paragraphs": ["Fragrance.", "The next thing.", "I didn't know what my next thing was.", "But I knew there was one.", "Something was next.", "Anything.", "Cool Water asked:"], "anchor": "cool-water-2"}, {"kind": "text", "eyebrow": "Cool Water", "title": "", "paragraphs": ["What?", "And I didn't have an answer.", "Yet.", "That question matters because becoming is rarely a straight line.", "At that age, I thought the future was something waiting for me somewhere else.", "A different place.", "A different version of myself."], "anchor": "cool-water-3"}, {"kind": "text", "eyebrow": "Cool Water", "title": "", "paragraphs": ["A different life.", "I didn't understand yet that becoming is not something you arrive at.", "It is something you participate in."], "anchor": "cool-water-4"}, {"kind": "text", "eyebrow": "Chapter III", "title": "Rain, Stone, Forest, Earth and River", "paragraphs": ["Some smells are memories.", "Others are places.", "The difference is subtle.", "A memory belongs to you.", "A place exists whether you are there or not.", "The fragrances I love in this category sit between those two things.", "They are not recreations."], "anchor": "rain-stone-forest-earth-and-river"}, {"kind": "text", "eyebrow": "Rain, Stone, Forest, Earth and River", "title": "", "paragraphs": ["They are reminders.", "Wet stone.", "Moss.", "Damp earth.", "Cold wood.", "River water.", "The smell of a landscape after it has changed."], "anchor": "rain-stone-forest-earth-and-river-2"}, {"kind": "text", "eyebrow": "Rain, Stone, Forest, Earth and River", "title": "", "paragraphs": ["That is what interests me.", "The moment after.", "The transition.", "The interval.", "The moment when something familiar becomes something else.", "The chimera."], "anchor": "rain-stone-forest-earth-and-river-3"}, {"kind": "plate", "eyebrow": "Plate", "title": "Rain, Stone, Forest, Earth and River", "asset_key": "PETRICHOR", "anchor": "rain-stone-forest-earth-and-river-plate"}, {"kind": "text", "eyebrow": "Place", "title": "The Merced", "paragraphs": ["I have fished the Merced countless times.", "Alone.", "With friends.", "With their families.", "But the days that matter most are the days I spend every year, on the Merced, with Will.", "There is something I am able to give him there that I didn't have with a father myself.", "I had it with Grandpa."], "anchor": "the-merced"}, {"kind": "text", "eyebrow": "The Merced", "title": "", "paragraphs": ["Time together.", "An experience handed from one person to another.", "And every once in a while, I get to watch Will love something I love—even if only for a moment.", "That's enough.", "The river gives me solitude and companionship at the same time.", "Peace and adventure.", "Memory and fatherhood."], "anchor": "the-merced-2"}, {"kind": "text", "eyebrow": "The Merced", "title": "", "paragraphs": ["I suppose it appeals to all the noble parts of me, of all of us.", "I caught the trout alone, a mile or so upstream, at the bend.", "The fish stays on my phone.", "A screensaver remembrance.", "But it doesn't stay with me.", "It's the place.", "Damp bark."], "anchor": "the-merced-3"}, {"kind": "text", "eyebrow": "The Merced", "title": "", "paragraphs": ["Mist.", "Pine needles underfoot.", "Cold river water.", "Wet granite.", "Those smooth, water-worn rocks splashed by the Merced, warming in the sun, splashed again.", "And splashed again."], "anchor": "the-merced-4"}, {"kind": "plate", "eyebrow": "Plate", "title": "The Merced", "asset_key": "RIVER_STONE", "anchor": "the-merced-plate"}, {"kind": "text", "eyebrow": "Specimen", "title": "Hacivat", "paragraphs": ["I didn't understand Hacivat at first.", "I thought I disliked it.", "Until I discovered its voice and suddenly understood what it was trying to say to me.", "Moss.", "Dampness.", "Wet stone.", "Mineral air."], "anchor": "hacivat"}, {"kind": "text", "eyebrow": "Hacivat", "title": "", "paragraphs": ["I couldn't explain why I was suddenly drawn to a fragrance I'd initially resisted.", "Writing this book finally gave me an answer I hadn't been looking for.", "Maybe I've been smelling the Merced in Hacivat all along.", "That isn't a technical explanation.", "It doesn't need to be.", "The river may not explain the formula.", "It explains me."], "anchor": "hacivat-2"}, {"kind": "text", "eyebrow": "Hacivat", "title": "", "paragraphs": ["I just had to remember it first."], "anchor": "hacivat-3"}, {"kind": "text", "eyebrow": "Chapter IV", "title": "Smoke, Garage, Ink, Tar and Other Wildcards", "paragraphs": ["Some smells we love aren't supposed to smell good.", "Gasoline.", "A hot garage.", "Rubber.", "Machine oil.", "Tar.", "Old books."], "anchor": "smoke-garage-ink-tar-and-other-wildcards"}, {"kind": "text", "eyebrow": "Smoke, Garage, Ink, Tar and Other Wildcards", "title": "", "paragraphs": ["The basement.", "Dust heating on something electrical.", "Camphor.", "Fresh paint.", "The inside of a tool drawer.", "I smell most everything that comes in front of me.", "I'll pick it up and smell it."], "anchor": "smoke-garage-ink-tar-and-other-wildcards-2"}, {"kind": "text", "eyebrow": "Smoke, Garage, Ink, Tar and Other Wildcards", "title": "", "paragraphs": ["Out of curiosity.", "Or clarity.", "Not because I necessarily want to wear it, eat it or kick it.", "I just want to know what it is.", "How it smells is what it is.", "Hopefully.", "A garage is never just \"garage.\""], "anchor": "smoke-garage-ink-tar-and-other-wildcards-3"}, {"kind": "text", "eyebrow": "Smoke, Garage, Ink, Tar and Other Wildcards", "title": "", "paragraphs": ["There is concrete beneath it.", "Rubber.", "Oil.", "Metal.", "Dust.", "Cardboard.", "Maybe gasoline."], "anchor": "smoke-garage-ink-tar-and-other-wildcards-4"}, {"kind": "text", "eyebrow": "Smoke, Garage, Ink, Tar and Other Wildcards", "title": "", "paragraphs": ["Heat changes all of them.", "So does cold.", "Open the door after the cars have been gone all night and it's one place.", "Pull a warm car inside and close the door and it's another.", "The components remain recognizable, but their relationships change.", "That's interesting to me.", "\"Smoky\" isn't enough."], "anchor": "smoke-garage-ink-tar-and-other-wildcards-5"}, {"kind": "text", "eyebrow": "Smoke, Garage, Ink, Tar and Other Wildcards", "title": "", "paragraphs": ["What burned?", "Wood smoke has structure.", "Cigarette smoke has history.", "An extinguished candle has that brief black thread rising from the wick.", "Electrical heat has something slightly alarming in it.", "Charred meat is another thing entirely.", "I want the noun behind the adjective."], "anchor": "smoke-garage-ink-tar-and-other-wildcards-6"}, {"kind": "text", "eyebrow": "Smoke, Garage, Ink, Tar and Other Wildcards", "title": "", "paragraphs": ["The same is true of leather, ink, tar, rubber, pencil shavings and dust.", "These aren't conventional perfume fantasies for me.", "They're smells I already know from somewhere else."], "anchor": "smoke-garage-ink-tar-and-other-wildcards-7"}, {"kind": "plate", "eyebrow": "Plate", "title": "Smoke, Garage, Ink, Tar and Other Wildcards", "asset_key": "GARAGE", "anchor": "smoke-garage-ink-tar-and-other-wildcards-plate"}, {"kind": "plate", "eyebrow": "Plate", "title": "Objects of Smell", "asset_key": "OBJECTS_OF_SMELL", "anchor": "objects-of-smell-plate"}, {"kind": "text", "eyebrow": "Chapter V", "title": "Becoming", "paragraphs": ["For a long time, I thought fragrance was something I put on.", "Looking back, I'm not so sure.", "Sometimes I chose a fragrance because it seemed to belong to the person I already was.", "More often, I think I chose one because it belonged to someone I was searching for.", "That distinction is difficult to see while you're living it.", "At fourteen, eighteen, twenty-four, thirty-four, you don't necessarily know which parts of yourself are permanent and which are scaffolding.", "You try things on."], "anchor": "becoming"}, {"kind": "text", "eyebrow": "Becoming", "title": "", "paragraphs": ["Clothes.", "Music.", "Girls.", "Ambition.", "Sophistication.", "Recklessness.", "Cologne."], "anchor": "becoming-2"}, {"kind": "text", "eyebrow": "Becoming", "title": "", "paragraphs": ["Some fit.", "Some don't.", "Some fit until they don't.", "And every once in a while, something you thought was costume turns out to have been you all along."], "anchor": "becoming-3"}, {"kind": "text", "eyebrow": "Memory", "title": "Anais Anais", "paragraphs": ["ANAIS ANAIS - TIME SUSPENDED", "Some fragrances don't return a person or a place.", "They transport.", "Anais Anais belongs to that strange interval when childhood had ended but adulthood hadn't quite begun.", "Everything felt temporary and permanent at the same time.", "Girls.", "Cars."], "anchor": "anais-anais"}, {"kind": "text", "eyebrow": "Anais Anais", "title": "", "paragraphs": ["Music.", "Bedrooms.", "Whatever happened on Friday night.", "You don't know yet which memories will survive.", "You certainly don't know what they'll smell like."], "anchor": "anais-anais-2"}, {"kind": "text", "eyebrow": "Memory", "title": "Obsession", "paragraphs": ["OBSESSION - ALMOST ADULT", "Obsession smelled like adulthood before I understood adulthood.", "It was darker.", "Louder.", "Sexual.", "Certain of itself.", "Searching for itself."], "anchor": "obsession"}, {"kind": "text", "eyebrow": "Obsession", "title": "", "paragraphs": ["Like a shark that can't stop swimming.", "Maybe that was the appeal."], "anchor": "obsession-2"}, {"kind": "text", "eyebrow": "Memory", "title": "Poison", "paragraphs": ["POISON - DANGER AND ANTICIPATION", "Poison didn't whisper.", "I could smell her before she reached me.", "And I loved it.", "There was something thrilling about that.", "A fragrance entering the room before the person wearing it.", "Announcement."], "anchor": "poison"}, {"kind": "text", "eyebrow": "Poison", "title": "", "paragraphs": ["Warning.", "Invitation.", "At that age, those things weren't necessarily distinguishable."], "anchor": "poison-2"}, {"kind": "text", "eyebrow": "Specimen", "title": "Hermes Eau d'Orange Verte", "paragraphs": ["HERMES EAU D'ORANGE VERTE - INEVITABILITY", "By my early thirties, some of the questions had changed.", "I was singing well.", "Not merely discovering that I had a voice, but learning how to use it.", "The gift had become work, and the work had become craft.", "Bear Valley came along at exactly the right moment in my life. Amy and I were just beginning, and looking back, it's hard to separate that scent from those first days of falling in love. I didn't know it then, but those days would become the first chapter of the life that led to you. What had once felt distant was suddenly close enough to inhabit."], "anchor": "hermes-eau-d-orange-verte"}, {"kind": "text", "eyebrow": "Hermes Eau d'Orange Verte", "title": "", "paragraphs": ["Cool Water had asked:", "What?", "Chanel had asked:", "Why?", "Hermes seemed to answer both.", "This.", "Music."], "anchor": "hermes-eau-d-orange-verte-2"}, {"kind": "text", "eyebrow": "Hermes Eau d'Orange Verte", "title": "", "paragraphs": ["Love.", "Travel.", "The beginnings of family.", "A life that no longer felt borrowed or rehearsed.", "And:", "Inevitability.", "Not destiny."], "anchor": "hermes-eau-d-orange-verte-3"}, {"kind": "text", "eyebrow": "Hermes Eau d'Orange Verte", "title": "", "paragraphs": ["That word feels too neat, too preordained.", "Inevitability is different.", "Looking backward, the ingredients were already there.", "The music.", "The appetite.", "The searching.", "The mistakes."], "anchor": "hermes-eau-d-orange-verte-4"}, {"kind": "text", "eyebrow": "Hermes Eau d'Orange Verte", "title": "", "paragraphs": ["The willingness to start over.", "Amy.", "Separate notes, for a long time.", "Then suddenly, the major third.", "A perfect fourth.", "I don't think I understood any of that while I was living it.", "I just knew I was singing well."], "anchor": "hermes-eau-d-orange-verte-5"}, {"kind": "text", "eyebrow": "Hermes Eau d'Orange Verte", "title": "", "paragraphs": ["I knew Amy was exciting.", "I knew the air felt good.", "And I knew, maybe for the first time, that I was not standing outside the life I wanted.", "I was in it."], "anchor": "hermes-eau-d-orange-verte-6"}, {"kind": "text", "eyebrow": "Outlier", "title": "Baccarat Rouge 540", "paragraphs": ["By this point, I should have myself figured out.", "I need the pieces.", "I want definition.", "Intervals.", "Dissonance.", "Suspension.", "Resolution."], "anchor": "baccarat-rouge-540"}, {"kind": "text", "eyebrow": "Baccarat Rouge 540", "title": "", "paragraphs": ["I want to know where one thing ends and another begins.", "I need the relationships.", "The tension.", "The architecture.", "And then there is Baccarat Rouge 540.", "The fragrance that should not fit.", "The one that violates my own expectations."], "anchor": "baccarat-rouge-540-2"}, {"kind": "text", "eyebrow": "Baccarat Rouge 540", "title": "", "paragraphs": ["The Outlier.", "You shouldn't be here.", "But here you are.", "Apparently I don't know myself as well as I thought.", "I didn't love it immediately.", "In fact, I wasn't entirely sure what I was smelling.", "And that should have been the end of it."], "anchor": "baccarat-rouge-540-3"}, {"kind": "text", "eyebrow": "Baccarat Rouge 540", "title": "", "paragraphs": ["It wasn't.", "I kept returning to it.", "That bothered me a little.", "Because Baccarat Rouge 540 does not give me the pieces in the way I usually demand them.", "I can't neatly pull it apart.", "I can't point to each component.", "I can't admire the spaces between individual materials because something else is happening."], "anchor": "baccarat-rouge-540-4"}, {"kind": "text", "eyebrow": "Baccarat Rouge 540", "title": "", "paragraphs": ["Something larger.", "Something less obedient.", "The fire, without having to burn everything and everyone down to the ground.", "Maybe that's what BR540 gives me.", "It's the elixir of youth.", "With hindsight.", "And a dash of possibility."], "anchor": "baccarat-rouge-540-5"}, {"kind": "text", "eyebrow": "Baccarat Rouge 540", "title": "", "paragraphs": ["But here it is.", "Something I cannot separate.", "Something I cannot fully explain.", "Something I want anyway.", "It's consonance, suspension, and a false cadence.", "And yet, in this moment, I love it."], "anchor": "baccarat-rouge-540-6"}, {"kind": "text", "eyebrow": "Stewardship", "title": "Green Water", "paragraphs": ["Some fragrances announce themselves.", "Others reveal themselves.", "Slowly.", "Eventually you realize they have been there all along.", "Green Water belongs to the second category.", "I didn't discover it in a dramatic moment.", "There was no lightning bolt."], "anchor": "green-water"}, {"kind": "text", "eyebrow": "Green Water", "title": "", "paragraphs": ["No instant recognition.", "No story of being stopped in my tracks.", "It arrived differently.", "Quietly.", "Like the best things often do.", "By the time Green Water became important to me, I was no longer searching only for who I might become.", "I was living inside the answer."], "anchor": "green-water-2"}, {"kind": "text", "eyebrow": "Green Water", "title": "", "paragraphs": ["Amy.", "Will.", "Maddie.", "The house.", "The routines.", "The ordinary moments that become extraordinary only after you realize they were the moments.", "Green Water smells like durability."], "anchor": "green-water-3"}, {"kind": "text", "eyebrow": "Green Water", "title": "", "paragraphs": ["Not permanence.", "Nothing is permanent.", "Durability.", "The ability to change and still remain yourself.", "That may be why it has lasted for me.", "It doesn't demand attention.", "It doesn't try to become the center of the room."], "anchor": "green-water-4"}, {"kind": "text", "eyebrow": "Green Water", "title": "", "paragraphs": ["It doesn't need to announce sophistication, danger, wealth, or desire.", "It simply belongs."], "anchor": "green-water-5"}, {"kind": "plate", "eyebrow": "Plate", "title": "Green Water", "asset_key": "GREEN_WATER", "anchor": "green-water-plate"}, {"kind": "text", "eyebrow": "Reflection", "title": "The Garden", "paragraphs": ["There is a difference between a garden and a collection of beautiful plants.", "A garden has continuity.", "It has seasons.", "Growth.", "Maintenance.", "Things that need tending.", "Every garden needs a gardener."], "anchor": "the-garden"}, {"kind": "text", "eyebrow": "The Garden", "title": "", "paragraphs": ["For a long time, I wanted to be the garden.", "I wanted to be the thing that was discovered.", "The thing that inspired.", "The thing that someone else cared for.", "Age has changed that.", "Now I understand the privilege of being the gardener.", "To tend something."], "anchor": "the-garden-2"}, {"kind": "text", "eyebrow": "The Garden", "title": "", "paragraphs": ["To show up.", "To create conditions where something else can grow.", "That may be the greatest transformation of my life.", "Not becoming someone new.", "Becoming someone responsible for what I already loved.", "Green Water is not a fragrance of arrival.", "It is a fragrance of stewardship."], "anchor": "the-garden-3"}, {"kind": "text", "eyebrow": "Inheritance", "title": "In Parallel", "paragraphs": ["The strange thing about inheritance is that it rarely arrives in the form we expect.", "Sometimes it is a name.", "Sometimes it is a watch, a photograph, a recipe, a story.", "Sometimes it is a smell.", "When Will became interested in cologne, I thought I was introducing him to something I loved.", "I was.", "But not only that."], "anchor": "in-parallel"}, {"kind": "text", "eyebrow": "In Parallel", "title": "", "paragraphs": ["He was introducing me to something I had misplaced.", "My old bottles.", "My old curiosity.", "My willingness to explore something simply because it interested me.", "The timing still feels impossible.", "I had just thrown away most of the collection I had built since I was his age.", "Then he began building one of his own."], "anchor": "in-parallel-2"}, {"kind": "text", "eyebrow": "In Parallel", "title": "", "paragraphs": ["A father and son, separated by decades, standing at the same doorway.", "Not the same doorway.", "A parallel one.", "There is something strange about watching your child discover something that once belonged to you.", "Not because it proves anything.", "Not because it means you passed something down exactly as intended.", "But because it reminds you that everything we love is borrowed for a while."], "anchor": "in-parallel-3"}, {"kind": "text", "eyebrow": "In Parallel", "title": "", "paragraphs": ["A fragrance.", "A song.", "A river.", "A story.", "Eventually, it belongs to someone else.", "That is the beautiful and uncomfortable thing about inheritance.", "You don't get to keep it."], "anchor": "in-parallel-4"}, {"kind": "text", "eyebrow": "In Parallel", "title": "", "paragraphs": ["You get to participate in its continuation.", "When Will smells a fragrance, I don't want him to smell what I smell.", "That would defeat the purpose.", "I don't want him to become a smaller version of me.", "I want him to find his own intervals.", "His own dissonance.", "His own resolutions."], "anchor": "in-parallel-5"}, {"kind": "text", "eyebrow": "In Parallel", "title": "", "paragraphs": ["The best thing I can give him is not my answer.", "It is permission to search.", "He likes smooth.", "I like prickly.", "He wants consonance.", "I need dissonance.", "He thrives on constancy."], "anchor": "in-parallel-6"}, {"kind": "text", "eyebrow": "In Parallel", "title": "", "paragraphs": ["I need a dash of variety.", "We move together, but in parallel.", "We are the interval.", "Consonant and perfect.", "For now.", "The fragrance does not need us to agree.", "It only needs us to pay attention."], "anchor": "in-parallel-7"}, {"kind": "text", "eyebrow": "In Parallel", "title": "", "paragraphs": ["I thought I was making a field guide for fragrances.", "Then I realized I was making a field guide for attention.", "How to notice.", "How to separate.", "How to remember.", "How to recognize something before it disappears.", "Will didn't bring me back to who I was."], "anchor": "in-parallel-8"}, {"kind": "text", "eyebrow": "In Parallel", "title": "", "paragraphs": ["He reminded me that I was never finished becoming.", "And maybe that is the final parallel:", "I am still searching.", "So is he.", "Different paths.", "Same curiosity."], "anchor": "in-parallel-9"}, {"kind": "text", "eyebrow": "Coda", "title": "Who Am I Becoming?", "paragraphs": ["I used to think becoming meant arriving.", "Finding the thing.", "Finding the person.", "Finding the version of myself that finally made sense.", "I don't think that anymore.", "Becoming is not arrival.", "It is attention."], "anchor": "who-am-i-becoming"}, {"kind": "text", "eyebrow": "Who Am I Becoming?", "title": "", "paragraphs": ["It is noticing what remains.", "What changes.", "What returns.", "A fragrance disappears almost immediately after you smell it.", "And yet somehow it can stay with you for decades.", "A grandfather.", "A river."], "anchor": "who-am-i-becoming-2"}, {"kind": "text", "eyebrow": "Who Am I Becoming?", "title": "", "paragraphs": ["A love.", "A child.", "A moment when everything was still possible.", "Maybe that is what I have been collecting all along.", "Not bottles.", "Not notes.", "Intervals."], "anchor": "who-am-i-becoming-3"}, {"kind": "text", "eyebrow": "Who Am I Becoming?", "title": "", "paragraphs": ["The spaces between things.", "The places where one thing becomes another.", "Where memory becomes meaning.", "Where experience becomes wisdom.", "Where a father and son stand beside each other, moving in parallel.", "Where fire becomes warmth.", "Where water becomes life."], "anchor": "who-am-i-becoming-4"}, {"kind": "text", "eyebrow": "Who Am I Becoming?", "title": "", "paragraphs": ["Where a smell becomes a story.", "And where, for now, we are still becoming."], "anchor": "who-am-i-becoming-5"}, {"kind": "text", "eyebrow": "Back Matter", "title": "Undiscovered Specimens", "paragraphs": ["The next fragrance has not been discovered yet.", "The next memory has not happened yet.", "The field guide remains open.", "Specimen:", "- Unknown\n- Encounter: Unknown\n- Date: Unknown\n- Status: Becoming"], "anchor": "undiscovered-specimens"}, {"kind": "text", "eyebrow": "Back Matter", "title": "Specimen Register", "paragraphs": ["The narrative ends. The field work continues."], "anchor": "specimen-register"}, {"kind": "text", "eyebrow": "Back Matter", "title": "Field Record", "paragraphs": ["Use the interactive edition for dated typed or handwritten field records. The ebook preserves this section without inventing an unapproved visual form."], "anchor": "field-record"}, {"kind": "text", "eyebrow": "Back Matter", "title": "Discovery Register", "paragraphs": ["No approved production master for the Discovery Register is present in the current source package. This page intentionally remains text-only."], "anchor": "discovery-register"}];
+const deliveryTOC=[["Title", 0], ["Introduction", 1], ["The Legend", 2], ["Peel, Citrus, Herbs and Green Light", 3], ["4711", 7], ["Spice, Amber, Resin, Tobacco and Leather", 14], ["Geo. F. Trumper Marlborough", 18], ["Chanel Pour Monsieur", 22], ["Cool Water", 25], ["Rain, Stone, Forest, Earth and River", 29], ["The Merced", 33], ["Hacivat", 38], ["Smoke, Garage, Ink, Tar and Other Wildcards", 41], ["Objects of Smell", 49], ["Becoming", 50], ["Anais Anais", 53], ["Obsession", 55], ["Poison", 57], ["Opium / Chanel No. 5", 59], ["Hermes Eau d'Orange Verte", 59], ["Baccarat Rouge 540", 65], ["Green Water", 71], ["The Garden", 77], ["In Parallel", 80], ["Who Am I Becoming?", 89], ["Undiscovered Specimens", 94], ["Specimen Register", 95], ["Field Record", 96], ["Discovery Register", 97]];
+const deliveryAssets={"OC_MONOGRAM_COVER":"Personal_Field_Guide_No01_Canvas_Cover_Concept.png","CITRUS_AURANTIUM": "CITRUS_AURANTIUM.jpg", "PETRICHOR": "PETRICHOR.jpg", "RIVER_STONE": "RIVER_STONE.jpg", "GARAGE": "GARAGE.jpg", "OBJECTS_OF_SMELL": "OBJECTS_OF_SMELL.jpg", "4711": "4711.png", "MARLBOROUGH": "MARLBOROUGH.png", "GREEN_WATER": "GREEN_WATER.jpeg", "RESIN_SPICE_TOBACCO_LEATHER": "RESIN_SPICE_TOBACCO_LEATHER.png"};
+let deliveryIndex=0;
+function deliveryHTML(p,i){
+ const fol=`<span class="cleanfolio">${i+1} / ${deliveryBook.length}</span>`;
+ if(p.kind==='plate') return `<article class="cleanpage plate"><button class="cleanplatebutton" type="button" onclick="openDeliveryPlate(${i})" aria-label="Open ${escapeHtml(p.title)} full screen"><img src="assets/${deliveryAssets[p.asset_key]}" alt="${escapeHtml(p.title)}"></button>${fol}</article>`;
+ if(p.kind==='legend') return `<article class="cleanpage"><div class="ey">${escapeHtml(p.eyebrow)}</div><h1>${escapeHtml(p.title)}</h1>${p.items.map(x=>`<div class="legenditem"><b>${escapeHtml(x[0])}</b><p>${escapeHtml(x[1])}</p></div>`).join('')}${fol}</article>`;
+ if(p.kind==='title') return `<article class="cleanpage"><div class="ey">${escapeHtml(p.eyebrow)}</div><h1>${escapeHtml(p.title)}</h1><div class="sub">${escapeHtml(p.subtitle)}</div>${fol}</article>`;
+ return `<article class="cleanpage"><div class="ey">${escapeHtml(p.eyebrow||'')}</div>${p.title?`<h1>${escapeHtml(p.title)}</h1>`:''}<div class="prose">${(p.paragraphs||[]).map(x=>`<p>${escapeHtml(x)}</p>`).join('')}</div>${fol}</article>`;
+}
+function showDeliveryBook(){
+ current='proof';renderNav($('#search').value);
+ deliveryIndex=Math.max(0,Math.min(deliveryBook.length-1,deliveryIndex));
+ $('#content').innerHTML=`<div class="cleanbook">${deliveryHTML(deliveryBook[deliveryIndex],deliveryIndex)}</div><div class="cleannav"><button class="prev" onclick="turnDelivery(-1)">Prev</button><button class="next" onclick="turnDelivery(1)">Next</button></div><div class="cleanprogress">${deliveryIndex+1} / ${deliveryBook.length}</div>`;
+ $('#noteTitle').textContent='The Personal Field Guides';
+ $('#xref').innerHTML='Book-first reading. Open the menu for contents, notes, recommendations, field sessions, annotations, sync, and edition controls.';
+}
+function turnDelivery(n){deliveryIndex=Math.max(0,Math.min(deliveryBook.length-1,deliveryIndex+n));showDeliveryBook();}
+function goDelivery(i){deliveryIndex=Number(i)||0;closeReaderMenu?.();showDeliveryBook();}
+function openDeliveryPlate(i){
+ const p=deliveryBook[i];
+ if(!p||p.kind!=='plate'||!deliveryAssets[p.asset_key]) return;
+ openFullScreen(p.title,`assets/${deliveryAssets[p.asset_key]}`);
+}
+function deliveryTOCHTML(){return deliveryTOC.map(x=>`<button class="navbutton" onclick="goDelivery(${x[1]})"><span class="kicker">Book</span>${escapeHtml(x[0])}</button>`).join('')}
+
+function openReaderMenu(){
+  $('#readerMenu')?.classList.add('open');
+  $('#readerBackdrop')?.classList.add('open');
+  $('#readerMenuButton')?.setAttribute('aria-expanded','true');
+  document.body.classList.add('drawer-open');
+}
+function closeReaderMenu(){
+  $('#readerMenu')?.classList.remove('open');
+  if(!$('#inspector')?.classList.contains('open')) $('#readerBackdrop')?.classList.remove('open');
+  $('#readerMenuButton')?.setAttribute('aria-expanded','false');
+  if(!$('#inspector')?.classList.contains('open')) document.body.classList.remove('drawer-open');
+}
+function openInspectorDrawer(){
+  closeReaderMenu();
+  $('#inspector')?.classList.add('open');
+  $('#readerBackdrop')?.classList.add('open');
+  document.body.classList.add('drawer-open');
+}
+function closeInspectorDrawer(){
+  $('#inspector')?.classList.remove('open');
+  $('#readerBackdrop')?.classList.remove('open');
+  document.body.classList.remove('drawer-open');
+}
+function closeAllDrawers(){ closeReaderMenu(); closeInspectorDrawer(); }
 function key(id){return `pfg.${edition}.${id}`}
 function blankData(){return{owned:false,collectionStatus:'unmarked',entries:[]}}
 function normalizeEntry(e){return Object.assign({id:'',date:'',text:'',fields:{firstImpression:'',remindsMe:'',afterHour:'',wearAgain:''},ink:[]},e||{}, {fields:Object.assign({firstImpression:'',remindsMe:'',afterHour:'',wearAgain:''},(e||{}).fields||{}),ink:Array.isArray((e||{}).ink)?e.ink:[]})}
@@ -209,8 +365,8 @@ function renderNav(filter=''){
  const specimenButtons=specimens.filter(s=>!q||[s.name,s.house,s.encounter,s.family,s.summary,...s.materials,...s.associations,...(s.anchors||[]).map(id=>anchorById(id)?.label||id),collectionLabels[getData(s.id).collectionStatus||'unmarked']].join(' ').toLowerCase().includes(q)||getData(s.id).entries.some(e=>[e.text,...Object.values(e.fields||{})].join(' ').toLowerCase().includes(q))).map(s=>`<button class="navbutton ${current===s.id?'active':''}" data-specimen="${s.id}"><span class="kicker">${s.chapter}</span>${s.name}</button>`).join('');
  const anchorButtons=contentAnchors.filter(a=>!q||[a.label,a.type,a.id,`p.${a.page}`,`page ${a.page}`].join(' ').toLowerCase().includes(q)).map(a=>`<button class="navbutton ${current==='proof'&&readerPage<=a.page&&a.page<=readerPage+1?'active':''}" data-anchor="${a.id}"><span class="kicker">${a.type} · p.${a.page}</span>${a.label}</button>`).join('');
  $('#nav').innerHTML=`${specimenButtons?`<div class="eyebrow" style="margin:10px 8px 6px">Field records</div>${specimenButtons}`:''}${anchorButtons?`<hr><div class="eyebrow" style="margin:10px 8px 6px">Book contents</div>${anchorButtons}`:''}`;
- document.querySelectorAll('[data-specimen]').forEach(b=>b.onclick=()=>showSpecimen(b.dataset.specimen));
- document.querySelectorAll('[data-anchor]').forEach(b=>b.onclick=()=>showAnchor(b.dataset.anchor));
+ document.querySelectorAll('[data-specimen]').forEach(b=>b.onclick=()=>{closeReaderMenu();showSpecimen(b.dataset.specimen)});
+ document.querySelectorAll('[data-anchor]').forEach(b=>b.onclick=()=>{closeReaderMenu();showAnchor(b.dataset.anchor)});
 }
 function updateEditionUI(){ $('#editionLabel').textContent=edition==='personal'?'Personal':'Will'; $('#switchEdition').textContent=edition==='personal'?'Switch to Will':'Switch to Personal'; loadInspector(); renderNav($('#search').value); }
 
@@ -391,7 +547,7 @@ async function ensurePdf(){
       try{
         const lib=window.PFG_PDFJS;
         if(!lib) return reject(new Error('PDF renderer not available'));
-        pdfDoc=await lib.getDocument('assets/current-proof-v2.pdf').promise;
+        throw new Error('Interim proof annotation is disabled in Delivery V2; use field records until native-page annotations are remapped.');
         resolve(pdfDoc);
       }catch(e){reject(e)}
     };
@@ -698,15 +854,12 @@ function setRegisterFilter(filter){registerFilter=filter;showRegister()}
 function showSpecimen(id){current=id;currentEntryId='current';let s=specimens.find(x=>x.id===id);renderNav($('#search').value);let d=getData(s.id);
  const mats=s.materials.length?s.materials.join(' · '):'Open field — no approved material list supplied.';
  const assocs=s.associations.length?s.associations.join('<br>'):'Open field.';
- const sourcePage=specimenProofPage(s);
- const proofLink=sourcePage?`<a href="assets/current-proof-v2.pdf#page=${sourcePage}" target="_blank">Read in current proof · p.${sourcePage}</a>`:'<span>Current proof location not asserted here.</span>';
+ const proofLink=`<span>Linked to the native book, not the interim proof.</span>`;
  const right=s.plate
    ? `<button class="platebutton" onclick="openPlateFullScreen('${s.id}')" aria-label="Open ${escapeHtml(s.name)} artwork full screen"><span class="zoommark" aria-hidden="true">+</span><img class="plate" src="${s.plate}" alt="${s.name} approved plate"/></button>`
-   : sourcePage
-    ? `<button class="platebutton blankplate" onclick="openProofPageFromSpecimen('${s.id}')" aria-label="Open ${escapeHtml(s.name)} proof page full screen"><span class="zoommark" aria-hidden="true">+</span><div class="inner"><div class="eyebrow">Current proof source</div><h2>${s.name}</h2><p>Open proof page ${sourcePage} full screen.</p></div></button>`
-    : `<div class="blankplate"><div class="inner"><div class="eyebrow">Specimen record</div><h2>${s.name}</h2><p>No separate approved production plate is being substituted here. The digital edition keeps this space textual until an approved source exists.</p></div></div>`;
+   : `<div class="blankplate"><div class="inner"><div class="eyebrow">Specimen record</div><h2>${s.name}</h2><p>No separate approved production plate is being substituted here.</p></div></div>`;
  const anchors=(s.anchors||[]).map(id=>anchorById(id)).filter(Boolean);
- const anchorHtml=anchors.length?anchors.map(a=>`<div class="anchorcard"><h4>${a.label}</h4><p>Stable content anchor · current proof p.${a.page}</p><div class="anchorlinks"><button onclick="showAnchor('${a.id}')">Open anchored page</button></div></div>`).join(''):'<p class="bodycopy">No stable cross-reference assigned.</p>';
+ const anchorHtml=anchors.length?anchors.map(a=>`<div class="anchorcard"><h4>${a.label}</h4><p>Stable content anchor · native book</p><div class="anchorlinks"><button onclick="showAnchor('${a.id}')">Open anchored page</button></div></div>`).join(''):'<p class="bodycopy">No stable cross-reference assigned.</p>';
  const lifecycle=['want_to_smell','sampled','owned','finished'].map(st=>`<button class="${d.collectionStatus===st?'active':''}" onclick="setCollectionStatus('${st}')">${collectionLabels[st]}</button>`).join('');
  $('#content').innerHTML=`<div class="book">${pageTurnControls('specimen')}<article class="page left"><div class="eyebrow">${s.chapter} · ${s.role}</div><h1>${s.name}</h1>${s.house?`<p class="lede">${s.house}</p>`:''}
  <div class="specimenfacts">
@@ -755,18 +908,7 @@ function showRegister(){current='register';renderNav($('#search').value);
  <div class="registergrid">${cards||'<p class="bodycopy">No specimens in this state yet.</p>'}</div><span class="folio">REGISTER</span></article></div>`;
  $('#noteTitle').textContent='Specimen Register';$('#xref').innerHTML='Choose a specimen to open its field record.';
 }
-function showProof(){
-  current='proof';renderNav($('#search').value);
-  const left=readerPage;
-  const right=readerPage+1;
-  $('#content').innerHTML=`<div class="book readerbook">${pageTurnControls('proof')}
-    <article class="page readerpage left"><button class="readerbutton" onclick="openProofPageImage(${left},'Proof page ${left}')" aria-label="Open proof page ${left} full screen"><canvas id="readerCanvasLeft" class="readercanvas"></canvas></button><span class="folio">p.${left}</span></article>
-    <article class="page readerpage right">${right<=92?`<button class="readerbutton" onclick="openProofPageImage(${right},'Proof page ${right}')" aria-label="Open proof page ${right} full screen"><canvas id="readerCanvasRight" class="readercanvas"></canvas></button><span class="folio">p.${right}</span>`:'<div class="readerempty">End of proof</div>'}</article>
-  </div>`;
-  $('#noteTitle').textContent='Current flowed proof';
-  $('#xref').innerHTML='Turn the full 92-page book with the page edges or arrow keys. Click a page to magnify it.';
-  renderReaderSpread();
-}
+function showProof(){showDeliveryBook();}
 function showJournal(){current='journal';renderNav($('#search').value);let rows=[];for(const s of specimens){let d=getData(s.id);d.entries.forEach(e=>rows.push({s,e}));}
  rows.sort((a,b)=>(b.e.date||'').localeCompare(a.e.date||''));$('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">${edition==='personal'?'Personal':'Will'} edition</div><h1>Field Records</h1><p class="lede">A searchable history of observations attached to specimens.</p>${rows.length?rows.map(({s,e})=>`<div class="noteitem"><button onclick="openEntry('${s.id}','${e.id}')"><strong>${s.name}</strong><time>${e.date}</time><div>${escapeHtml((e.text||e.fields?.firstImpression||e.fields?.remindsMe||'[handwritten entry]')).slice(0,240)}${(e.text||'').length>240?'…':''}</div></button></div>`).join(''):'<p class="bodycopy">No field records yet.</p>'}</article></div>`;}
 function showAbout(){current='about';renderNav($('#search').value);$('#content').innerHTML=`<div class="book" style="display:block"><article class="page"><div class="eyebrow">Working prototype</div><h1>A book with memory</h1><p class="lede">The reading object stays visually book-like, while specimens and field records become addressable data.</p><p class="bodycopy">This build adds Field Sessions: select one or more source-supported specimens, record opening / 15-minute / 1-hour / later observations, compare them side by side, add a handwritten Apple Pencil session page, and save the result back into each fragrance’s dated field history. Records currently live only in this browser. A production build can replace local storage with authenticated cloud sync without changing the book model.</p><div class="callout"><b>Not yet canonical:</b> This prototype is an interaction proof, not a final publication layout. Missing plates, recommendation sets, and unresolved source material remain unresolved.</div></article></div>`;}
@@ -786,7 +928,7 @@ function loadInspector(){
   $('#afterHour').value=e?.fields?.afterHour||'';
   $('#wearAgain').value=e?.fields?.wearAgain||'';
   inkStrokes=JSON.parse(JSON.stringify(e?.ink||[]));
-  $('#xref').innerHTML=s.proof?`<a href="assets/current-proof-v2.pdf#page=${s.proof}" target="_blank">Proof p.${s.proof}</a>`:'No exact current-proof page asserted for this specimen.';
+  $('#xref').innerHTML=s.proof?`<span>Native book cross-reference</span>`:'No exact current-proof page asserted for this specimen.';
   requestAnimationFrame(resizeInkCanvas);
 }
 function ensureEntry(d){
@@ -825,7 +967,7 @@ function newEntry(){
   inkStrokes=[]; redrawInk(); $('#note').focus();
 }
 function openEntry(id,eid){current=id;currentEntryId=eid;showSpecimen(id);currentEntryId=eid;loadInspector();focusNote();}
-function focusNote(){let p=$('#inspector');p.classList.add('open');$('#note').focus();}
+function focusNote(){openInspectorDrawer();setTimeout(()=>$('#note')?.focus(),120);}
 
 function msgSync(s){if($('#syncMsg'))$('#syncMsg').textContent=s||''}
 function updateSyncUI(){
@@ -939,6 +1081,10 @@ function endInk(ev){
   activeStroke.points.push(canvasPoint(ev)); activeStroke=null; redrawInk();
 }
 function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+$('#readerMenuButton').onclick=openReaderMenu;
+$('#railClose').onclick=closeReaderMenu;
+$('#inspectorClose').onclick=closeInspectorDrawer;
+$('#readerBackdrop').onclick=closeAllDrawers;
 $('#switchEdition').onclick=()=>{edition=edition==='personal'?'will':'personal';localStorage.setItem('pfg.edition',edition);updateEditionUI();if(current==='journal')showJournal();else if(specimens.some(s=>s.id===current))showSpecimen(current)};
 $('#saveNote').onclick=saveCurrent;$('#owned').onchange=saveCurrent;$('#newNote').onclick=newEntry;$('#openNotes').onclick=focusNote;$('#search').oninput=e=>renderNav(e.target.value);
 $('#typeMode').onclick=()=>setNoteMode('type');$('#inkMode').onclick=()=>setNoteMode('ink');
@@ -946,14 +1092,14 @@ $('#undoInk').onclick=()=>{inkStrokes.pop();redrawInk()};$('#clearInk').onclick=
 $('#inkCanvas').addEventListener('pointerdown',beginInk);$('#inkCanvas').addEventListener('pointermove',moveInk);$('#inkCanvas').addEventListener('pointerup',endInk);$('#inkCanvas').addEventListener('pointercancel',endInk);
 $('#inkCanvas').addEventListener('click',openEntryInkFullScreen);
 window.addEventListener('keydown',ev=>{
-  if(ev.key==='Escape')closeFullScreen();
+  if(ev.key==='Escape'){if($('#readerMenu')?.classList.contains('open')||$('#inspector')?.classList.contains('open')){closeAllDrawers();return}else closeFullScreen();}
   if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
   if(ev.key==='ArrowRight')turnCurrentBook(1);
   if(ev.key==='ArrowLeft')turnCurrentBook(-1);
 });
 window.addEventListener('resize',()=>{if(noteMode==='ink')resizeInkCanvas();if($('#pdfCanvas'))renderPdfPage(annotationPage);if(current==='proof')renderReaderSpread()});
 $('#signInBtn').onclick=sendMagicLink;$('#syncNowBtn').onclick=syncAll;$('#signOutBtn').onclick=signOutCloud;
-document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>({proof:showProof,journal:showJournal,about:showAbout}[b.dataset.view]()));
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{closeReaderMenu();({proof:showProof,journal:showJournal,about:showAbout}[b.dataset.view]())});
 $('#exportBtn').onclick=()=>{let payload={version:1,exported:new Date().toISOString(),records:{personal:{},will:{}}};['personal','will'].forEach(ed=>specimens.forEach(s=>{try{payload.records[ed][s.id]=JSON.parse(localStorage.getItem(`pfg.${ed}.${s.id}`))||{owned:false,entries:[]}}catch(e){}}));let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='personal-field-guides-records.json';a.click();URL.revokeObjectURL(a.href)};
 $('#importInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let p=JSON.parse(await f.text());['personal','will'].forEach(ed=>Object.entries(p.records?.[ed]||{}).forEach(([id,d])=>localStorage.setItem(`pfg.${ed}.${id}`,JSON.stringify(d))));updateEditionUI();alert('Field records imported.')}catch(err){alert('Could not import this file.')}};
 window.focusNote=focusNote;window.openEntry=openEntry;window.openPlateFullScreen=openPlateFullScreen;window.openProofPageFromSpecimen=openProofPageFromSpecimen;window.turnCurrentBook=turnCurrentBook;
